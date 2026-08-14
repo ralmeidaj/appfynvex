@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Base application theme. windowBackground é a "splash nativa" —
+         hexágono da Fynvex sobre navy, mostrado antes do bundle JS carregar. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">@color/splash_bg</item>
+        <item name="android:navigationBarColor">@color/splash_bg</item>
+    </style>
+
+</resources>

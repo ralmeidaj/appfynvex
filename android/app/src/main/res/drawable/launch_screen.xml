@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fundo nativo mostrado antes do bundle JS carregar (windowBackground do
+     AppTheme) — hexágono da Fynvex sobre o navy da marca, pra não aparecer
+     tela lisa/em branco no cold start. Continua sem lib de splash nativa
+     (react-native-bootsplash etc.) — layer-list simples, mesma filosofia
+     de não introduzir dependência além do necessário. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/splash_bg" />
+    <item
+        android:width="120dp"
+        android:height="120dp"
+        android:gravity="center">
+        <bitmap
+            android:src="@drawable/splash_logo"
+            android:gravity="center" />
+    </item>
+</layer-list>

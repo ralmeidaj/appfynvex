@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Especificação de Requisitos — App Fynvex (Cadastro e Antecipação para Profissionais de Saúde)</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:11pt;color:#1a1a1a;background:#fff;padding-top:52px}
+a{color:#1a6fb5}
+code,pre{font-family:'Consolas','Courier New',monospace;font-size:9.5pt;color:#1a3a5a;background:#f0f4f8;border-radius:3px;padding:1px 4px}
+pre{padding:10px 14px;overflow-x:auto;border:1px solid #d0dae8;border-radius:4px}
+pre code{background:none;padding:0}
+
+/* Layout */
+.doc{max-width:900px;margin:0 auto;padding:40px 48px}
+
+/* Cabeçalho */
+.doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.doc-header-left h1{font-size:20pt;font-weight:700;color:#1a2a4a}
+.doc-header-left .subtitle{font-size:13pt;color:#555;margin-top:2px}
+.doc-header img{height:125px}
+.doc-hr{border:none;border-bottom:3px solid #1a6fb5;margin:12px 0 16px}
+.doc-meta{display:flex;gap:24px;background:#f0f4f8;border-radius:6px;padding:10px 16px;font-size:10pt;margin-bottom:32px}
+.doc-meta span{color:#555}.doc-meta strong{color:#1a2a4a}
+
+/* Tipografia */
+h1{font-size:20pt;font-weight:700;color:#1a2a4a;margin:24px 0 10px}
+h2{font-size:14pt;font-weight:700;color:#1a2a4a;margin:28px 0 10px}
+h3{font-size:12pt;font-weight:700;color:#1a4a6b;margin:20px 0 8px}
+h4{font-size:11pt;font-weight:700;color:#2a5a7a;margin:16px 0 6px}
+p{line-height:1.6;margin:8px 0}
+ul,ol{padding-left:20px;margin:6px 0}
+li{line-height:1.6;margin:2px 0}
+hr{border:none;border-bottom:1px solid #d0dae8;margin:20px 0}
+
+/* Tabelas */
+table{width:100%;border-collapse:collapse;font-size:10pt;margin:12px 0}
+th{background:#1a2a4a;color:#fff;padding:8px 12px;text-align:left}
+td{padding:7px 12px;border:1px solid #ccd6e0}
+tr:nth-child(even) td{background:#f5f8fc}
+
+/* Seções colapsáveis */
+.sec-heading{cursor:pointer;display:flex;align-items:center;gap:6px}
+.sec-heading::before{content:'▼';font-size:9pt;color:#1a6fb5;flex-shrink:0;transition:transform .2s}
+.sec-heading.collapsed::before{content:'▶'}
+.sec-body{overflow:hidden;transition:max-height .25s ease,opacity .2s ease}
+.sec-body.collapsed{max-height:0!important;opacity:0;overflow:hidden}
+
+/* Cards de requisitos */
+.req{border-left:4px solid #1a6fb5;background:#f7fafd;border-radius:0 6px 6px 0;margin:10px 0;overflow:hidden}
+.req-rnf{border-left-color:#2a7a2a;background:#f7fdf7}
+.req-rn{border-left-color:#c47a00;background:#fdf7f0}
+.req-header{padding:8px 12px;cursor:pointer;display:flex;align-items:baseline;gap:6px;user-select:none}
+.req-header--simple{cursor:default}
+.req-toggle{font-size:8pt;color:#888;flex-shrink:0;width:12px}
+.req-id{font-weight:700;font-size:10pt;color:#1a6fb5;flex-shrink:0}
+.req-rnf .req-id{color:#2a7a2a}
+.req-rn .req-id{color:#c47a00}
+.req-summary{font-size:10pt;color:#1a1a1a;line-height:1.5}
+.req-body{padding:4px 12px 10px 30px;overflow:hidden;transition:max-height .25s ease,opacity .2s ease}
+.req-body.collapsed{max-height:0!important;opacity:0;padding-top:0;padding-bottom:0}
+
+/* Toolbar */
+#toolbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border-bottom:1px solid #d0dae8;padding:7px 24px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tb-btn{font-size:9pt;padding:3px 10px;border:1px solid #d0dae8;border-radius:4px;background:#fff;cursor:pointer;color:#1a2a4a;transition:background .15s}
+.tb-btn:hover{background:#f0f4f8}
+.tb-sep{color:#d0dae8;margin:0 4px;font-size:12pt}
+.tb-rf{border-color:#1a6fb5;color:#1a6fb5}.tb-rf:hover{background:#f7fafd}
+.tb-rnf{border-color:#2a7a2a;color:#2a7a2a}.tb-rnf:hover{background:#f7fdf7}
+.tb-rn{border-color:#c47a00;color:#c47a00}.tb-rn:hover{background:#fdf7f0}
+.tb-legend{margin-left:auto;display:flex;gap:6px;align-items:center}
+.tb-chip{font-size:8.5pt;padding:2px 8px;border-radius:10px;font-weight:600}
+.chip-rf{background:#1a6fb5;color:#fff}
+.chip-rnf{background:#2a7a2a;color:#fff}
+.chip-rn{background:#c47a00;color:#fff}
+
+/* Print */
+@media print{
+  #toolbar{display:none}
+  body{padding-top:0}
+  .sec-body,.req-body{max-height:none!important;opacity:1!important;overflow:visible!important}
+  .sec-heading::before,.req-toggle{display:none}
+  @page{size:A4;margin:2cm 1.8cm}
+  .doc{max-width:100%;padding:0}
+  .doc-header img{height:100px}
+  h1{font-size:17pt}
+  h2{font-size:12pt}
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button class="tb-btn" onclick="expandAll('sec')">Expandir seções</button>
+  <button class="tb-btn" onclick="collapseAll('sec')">Recolher seções</button>
+  <span class="tb-sep">|</span>
+  <button class="tb-btn" onclick="expandAll('req')">Expandir req.</button>
+  <button class="tb-btn" onclick="collapseAll('req')">Recolher req.</button>
+  <button class="tb-btn tb-rf" onclick="filterReq('rf')">Só RF</button>
+  <button class="tb-btn tb-rnf" onclick="filterReq('rnf')">Só RNF</button>
+  <button class="tb-btn tb-rn" onclick="filterReq('rn')">Só RN</button>
+  <button class="tb-btn" onclick="filterReq('all')">Todos</button>
+  <div class="tb-legend">
+    <span class="tb-chip chip-rf">RF</span>
+    <span class="tb-chip chip-rnf">RNF</span>
+    <span class="tb-chip chip-rn">RN</span>
+  </div>
+</div>
+
+<div class="doc">
+
+<div class="doc-header">
+  <div class="doc-header-left">
+    <h1>Especificação de Requisitos</h1>
+    <div class="subtitle">App Fynvex — Cadastro e Antecipação para Profissionais de Saúde</div>
+  </div>
+  <img src="data:image/jpeg;base64,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" alt="Ciberian"/>
+</div>
+<hr class="doc-hr"/>
+<div class="doc-meta">
+  <span><strong>Documento:</strong> Especificação de Requisitos</span>
+  <span><strong>Versão:</strong> 1.0</span>
+  <span><strong>Data:</strong> 08/08/2026</span>
+  <span><strong>Status:</strong> Em elaboração</span>
+</div>
+
+<h1>Especificação de Requisitos — App Fynvex (Cadastro e Antecipação para Profissionais de Saúde)</h1>
+<h2 class="sec-heading">Contexto</h2>
+<p>A Fynvex opera hoje a antecipação de recebíveis de profissionais de saúde por meio de um back-office administrativo (sistema <code>antecipacao</code>, Laravel), operado inteiramente pela equipe interna. Não existe hoje um canal self-service para a empresa se cadastrar, enviar documentos ou solicitar uma antecipação sem intervenção manual da equipe Fynvex.</p>
+<p>Este documento especifica os requisitos de um <strong>aplicativo móvel self-service para profissionais de saúde (pessoa jurídica)</strong> — cadastro simplificado com leitura automática de documentos por IA, autenticação por senha (lembrada pelo dispositivo) + leitura facial, suporte a múltiplos representantes por empresa (RF-REP), solicitação de antecipação a partir de Nota Fiscal (própria ou originada por uma gestora/hospital convenente, RF-TER) e acompanhamento da liquidação — bem como os <strong>endpoints de integração</strong> que precisam ser criados no backend existente da Fynvex para sustentar essas funcionalidades. O escopo cobre exclusivamente pessoa jurídica: não há cadastro de médico autônomo como pessoa física.</p>
+<p>O aplicativo é também o canal de originação da parceria estratégica entre a Fynvex e a Associação Bahiana de Medicina (ABM): PJs médicas vinculadas ao Departamento de Convênios (DC) da ABM podem se cadastrar declarando esse vínculo, e a plataforma do DC pode originar solicitações diretamente (deep link para o app). A parte operacional dessa parceria que roda inteiramente no backoffice — cadastro de parceiros/gestoras, split de pagamento, cashback, dashboard e prestação de contas do DC — é mencionada aqui apenas nos pontos em que afeta o contrato de API ou o comportamento do app; o restante é responsabilidade exclusiva do backend (ver "Fora de Escopo").</p>
+<hr>
+<h2 class="sec-heading">1. Requisitos Funcionais</h2>
+<h3 class="sec-heading">1.1 Autenticação e Sessão</h3>
+<blockquote><strong>Nota de arquitetura</strong>: a autenticação é por <strong>CPF + senha</strong> — não pelo CNPJ da empresa. O CPF é pessoal e já identifica <strong>qual</strong> representante está entrando, mesmo numa empresa com mais de um (RF-REP-01/02) — não há tela adicional de seleção, nem é preciso informar o CNPJ da empresa antes da senha. A leitura facial <strong>não faz parte do login nem da retomada de sessão</strong> — ela é exclusiva do momento de assinar algo: solicitar/assinar uma antecipação (RF-ANT-07), assinar o Contrato-Mãe (RF-MAE-02) ou aprovar uma antecipação de terceiro (RF-TER-05). O CNPJ continua existindo no app, só que exclusivamente no cadastro (RF-CAD-01) — nunca no login.</blockquote>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-01</span><span class="req-summary">O sistema deve autenticar o usuário por <strong>CPF + senha</strong>. A senha é criada uma única vez por representante (no cadastro original, RF-CAD-01, ou no aceite de convite, RF-REP-03) — não há um formulário de "criar senha" recorrente nem tela de troca de senha no dia a dia.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-02</span><span class="req-summary">Ao informar o CPF na tela de login, o sistema deve verificar se existe um representante ativo com esse CPF e retornar o status do cadastro da empresa vinculada a ele (<code>none</code> / <code>pending</code> / <code>approved</code> / <code>rejected</code>) antes de solicitar a senha. Esta consulta é limitada a 5 tentativas por 15 minutos por dispositivo (RNF-08), para não servir de ferramenta de enumeração de CPFs cadastrados.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-03</span><span class="req-summary">A senha informada é comparada contra a senha cadastrada do representante identificado pelo CPF (RF-AUTH-02). Falha na verificação deve permitir nova tentativa sem bloqueio, exceto após 5 tentativas consecutivas malsucedidas em 15 minutos (ver RNF-08). Um login bem-sucedido não envolve leitura facial nenhuma — ela é exclusiva do momento de assinar algo (RF-BIO-03).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-04</span><span class="req-summary">Autenticação bem-sucedida emite um <strong>token de sessão (JWT)</strong> com validade configurável (padrão: 7 dias), armazenado de forma segura no dispositivo (keychain/keystore).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-04a</span><span class="req-summary">: no primeiro login bem-sucedido num dispositivo, o app salva a senha usada — preferencialmente através do **gerenciador de senhas nativo do sistema operacional** (Autofill/Credential Manager no Android, Keychain no iOS), não só num armazenamento próprio do app, para que o teclado já sugira a senha salva em logins futuros — além de guardá-la também no mesmo local seguro do token (RNF-20), nunca em texto claro, nunca sincronizada em backup de nuvem. Em logins seguintes nesse mesmo dispositivo (seja por reabertura do app, seja porque o token de sessão expirou), o app reenvia essa senha automaticamente e entra <strong>sem pedir nada ao usuário</strong> — nem CPF, nem senha, nem leitura facial. Digitar CPF e senha só volta a ser exigido após logout explícito (RF-AUTH-07), troca/reinstalação do app, ou uso do fluxo "Entrar com outro usuário" no mesmo aparelho.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-05</span><span class="req-summary">Se o CPF não pertencer a nenhum representante (<code>kyc_status = none</code>), o app deve informar claramente que nenhum cadastro foi encontrado e oferecer o caminho para "Novo cadastro", sem permitir acesso ao restante do app.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-06</span><span class="req-summary">Se o cadastro da empresa existir mas ainda estiver em análise (`kyc_status = pending`), o login autenticado deve direcionar à tela de acompanhamento de análise, não à tela principal.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-07</span><span class="req-summary">O logout deve invalidar o token de sessão no backend (blacklist/revogação) <strong>e</strong> apagar a senha lembrada localmente (RF-AUTH-04a) — não apenas remover o token do dispositivo. Um logout incompleto (só o token) deixaria o próximo "login" reenviar a senha lembrada silenciosamente e abrir direto no app sem pedir nada, mesmo depois do usuário ter pedido explicitamente para saír.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-AUTH-08</span><span class="req-summary">: cobre tanto senha esquecida quanto o cenário de perda/troca do aparelho (a senha lembrada, RF-AUTH-04a, só existe no dispositivo antigo). Não é um novo cadastro — a pessoa já passou pela verificação de documento e revisão da equipe Fynvex (RF-KYC-02) uma vez; recuperar conta não repete isso, só restabelece a credencial. Fluxo: a partir da tela de login, uma opção "Perdi meu acesso" pede <strong>CPF + e-mail cadastrado</strong> do representante (RF-REP-07). O backend confirma que aquele e-mail pertence a um representante <code>ativo</code> e envia um <strong>código de verificação por e-mail, válido por 15 minutos</strong> — segundo fator equivalente ao facial, não um substituto mais fraco (por isso a existência de senha, RF-AUTH-01, não resolve isso por conta própria: permitir login só por senha sem nenhum segundo fator abriria mão da autenticação forte pra sempre, não só pro caso de recuperação). Confirmado o código, o app permite <strong>definir uma nova senha e refazer a leitura facial</strong> (novo template, substituindo o antigo) — diferente do login do dia a dia, recuperar conta é sensível o bastante pra justificar a facial de novo, no mesmo espírito de RF-BIO-03. O código de e-mail segue o mesmo limite de tentativas de RNF-08 (5 tentativas/15 min) para não abrir uma segunda porta de força bruta. Diferença deliberada em relação ao convite de um novo representante (RF-REP-03): ali é uma identidade nova entrando, por isso passa pela revisão da equipe Fynvex; aqui é a **mesma pessoa já verificada** restabelecendo acesso — não há uma segunda revisão manual.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.2 Cadastro da Empresa (Onboarding)</h3>
+<h4 class="sec-heading">1.2.1 CNPJ e Documentos</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-01</span><span class="req-summary">O cadastro inicial deve coletar: CNPJ, <strong>e-mail do responsável legal</strong> (obrigatório — único uso hoje é a recuperação de conta, RF-AUTH-08; não há newsletter/marketing por e-mail neste documento), upload do <strong>Contrato Social</strong> (obrigatório) e upload de **documento de identidade com foto do responsável legal<strong> — RG ou CNH (obrigatório). O upload de </strong>Procuração** é opcional, aplicável somente quando a assinatura da empresa ocorrer por procurador. Não é exigido upload separado de Cartão CNPJ — o CNPJ já é extraído do Contrato Social pela leitura automática (RF-CAD-05).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-01a</span><span class="req-summary">: o campo de CNPJ do cadastro inicial aceita tanto o formato numérico (14 dígitos) quanto o formato alfanumérico da Receita Federal (12 caracteres alfanuméricos + 2 dígitos verificadores numéricos, em vigor desde julho de 2026) — o teclado do campo não é restrito a numérico, e a checagem de "campo completo" passa a ser 14 caracteres (dígito ou letra nas 12 primeiras posições, dígito nas 2 últimas), não mais "14 dígitos". A máscara visual (<code>XX.XXX.XXX/XXXX-XX</code>) não muda, só os caracteres aceitos em cada posição. <blockquote><strong>Nota de implementação (backend)</strong>: o backend real (<code>sistema-fynvex</code>) tem hoje uma função de validação de dígito verificador de CNPJ (<code>Utils::validaCPF</code>, <code>app/Helpers/Utils.php</code>) que descarta caracteres não numéricos antes de calcular o dígito verificador — ela não reconhece o formato alfanumérico. Não é chamada em nenhum lugar do código hoje (função morta), mas a validação de CNPJ escrita para o endpoint <code>POST /cadastro</code> (o único da seção 4 que ainda lida com CNPJ — o login usa CPF, RF-AUTH-01) precisa implementar o algoritmo de dígito verificador do formato novo — não reaproveitar essa função como está.</blockquote></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-02</span><span class="req-summary">Nenhum outro dado deve ser solicitado manualmente nesta etapa (sem formulário de razão social, endereço ou responsável legal digitado pelo usuário) — as únicas exceções são o e-mail (RF-CAD-01, digitado porque não existe em nenhum documento pra extrair) e o vínculo com parceiro (opcional), ver 1.2.4.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-03</span><span class="req-summary">Arquivos aceitos para Contrato Social, documento de identidade e Procuração: PDF, JPG ou PNG, até 10 MB por arquivo.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-04</span><span class="req-summary">O botão de envio só é habilitado quando o CNPJ estiver preenchido e o Contrato Social e o documento de identidade estiverem anexados.</span></div><div class="req-body"></div></div>
+<h4 class="sec-heading">1.2.2 Leitura Automática por IA</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-05</span><span class="req-summary">Após o envio, o sistema deve processar o Contrato Social por um serviço de extração de dados (OCR/IA) e identificar automaticamente: razão social, nome fantasia, endereço e dados do responsável legal (nome, CPF, cargo).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-06</span><span class="req-summary">O tempo de processamento da leitura deve ser comunicado ao usuário com indicador de carregamento; o app deve consultar o status periodicamente até a conclusão (polling) ou receber atualização assíncrona.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-07</span><span class="req-summary">Os dados extraídos devem ser exibidos ao usuário para <strong>revisão e confirmação</strong> antes de seguir no fluxo. O usuário pode corrigir qualquer campo identificado incorretamente antes de confirmar.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-08</span><span class="req-summary">Falha na extração (documento ilegível, formato inválido) deve permitir reenvio do documento sem reiniciar o cadastro do zero.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-08a</span><span class="req-summary">O documento de identidade do responsável (RF-CAD-01) não passa por **extração de texto** automática (OCR) — nesse sentido é anexado como a Procuração. Ele passa, sim, por <strong>validação facial automática</strong> contra a leitura facial do cadastro (RF-BIO-09); o resultado dessa comparação é insumo para a análise manual da equipe Fynvex (RF-KYC-02), não a substitui.</span></div><div class="req-body"></div></div>
+<h4 class="sec-heading">1.2.3 Conclusão do Cadastro</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-09</span><span class="req-summary">O cadastro só é enviado para análise da equipe Fynvex após: dados extraídos confirmados (RF-CAD-07) + leitura facial cadastrada (RF-BIO) + dados bancários informados (RF-BANK) + termos de uso aceitos (RF-TERM).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-10</span><span class="req-summary">Ao concluir as etapas acima, o status do cadastro muda para <code>pending</code> e o usuário é direcionado à tela de acompanhamento de análise (RF-KYC-01). A resposta de <code>aceite-termos</code> (seção 4.2) já inclui um token de sessão — o app autentica o usuário nesse momento, sem exigir uma chamada de login separada logo após o cadastro.</span></div><div class="req-body"></div></div>
+<h4 class="sec-heading">1.2.4 Vínculo com Parceiro (opcional)</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-11</span><span class="req-summary">Durante o cadastro, a PJ pode <strong>autodeclarar</strong> vínculo com um parceiro de originação — hoje o Departamento de Convênios (DC) da Associação Bahiana de Medicina (ABM); futuramente outras gestoras/contabilidades parceiras. O campo é um texto/código de parceiro, opcional, exibido junto aos dados bancários (RF-BANK) e não é validado de forma síncrona pelo app. Uma PJ (médico) só pode ter vínculo com <strong>uma</strong> gestora/convênio por vez — o campo é um único texto/código, não uma lista; declarar um novo código substitui o anterior.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-12</span><span class="req-summary">A autodeclaração de vínculo é validada pelo backend contra a base de PJs do parceiro de forma assíncrona. Enquanto a validação estiver pendente (<code>vinculo_status = pendente</code>), a operação da PJ segue normalmente, sem qualquer benefício ou restrição associada ao parceiro (RN-12). Se a validação falhar (PJ não encontrada na base do parceiro), o vínculo passa para <code>nao_vinculado</code> e a PJ é tratada como sem parceiro a partir de então.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-13</span><span class="req-summary">O status do vínculo (<code>nao_vinculado</code> / <code>pendente</code> / <code>confirmado</code>) é exibido no Perfil (RF-PERF-01) e determina o comportamento da tela de liquidação (RF-PAG-01): PJs com vínculo <code>confirmado</code> têm a liquidação processada pela plataforma do parceiro, sem tela de pagamento no app; as demais (<code>nao_vinculado</code> ou <code>pendente</code>) veem a tela de pagamento por QR/boleto (RF-PAG-02).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-CAD-14</span><span class="req-summary">A originação de uma solicitação também pode partir de fora do app: um deep link vindo da plataforma do parceiro (ex.: botão de antecipação no dashboard do DC) abre o app já autenticado (ou no login, se a sessão tiver expirado) diretamente na tela de nova solicitação (RF-ANT-01), atribuindo o vínculo de parceiro automaticamente — sem depender da autodeclaração de RF-CAD-11. O tratamento de deep link em si (esquema de URL, parâmetros) é detalhe de implementação do app, não normatizado por este documento.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.3 Leitura Facial (Biometria)</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-01</span><span class="req-summary">Durante o cadastro, o app deve capturar uma leitura facial do responsável, para uso exclusivo como segundo fator de assinatura (RF-BIO-03) — não como credencial do login em si (RF-AUTH-01, que usa só CPF + senha).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-02</span><span class="req-summary">A leitura facial é armazenada como <strong>template biométrico</strong> (não como imagem crua) no backend, criptografado em repouso (ver RNF-06).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-03</span><span class="req-summary">A leitura facial é <strong>exclusiva do momento de assinar algo</strong> — nunca do login (RF-AUTH-01) nem da retomada de sessão (RF-AUTH-04a/RNF-19). Ocorre em três momentos: assinatura de uma solicitação de antecipação (RF-ANT-07), assinatura do Contrato-Mãe (RF-MAE-02) e aprovação de uma antecipação originada por terceiro (RF-TER-05) — os três reaproveitam o mesmo mecanismo de captura e verificação. Também é refeita ao final da recuperação de conta (RF-AUTH-08), por ser um momento sensível equivalente.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-04</span><span class="req-summary">Cada representante de perfil <code>representante_legal</code> (RF-REP-01/02) tem seu próprio template biométrico — não é um template único "da empresa". Uma empresa com múltiplos representantes desse perfil tem múltiplos templates, um por pessoa; a senha (RF-AUTH-01) é o que identifica, no momento do login, qual representante está entrando — é esse representante cujo template será usado quando uma leitura facial for de fato necessária (RF-BIO-03), num momento posterior e separado do login. Um representante de perfil <code>visualizador</code> não tem template nenhum — ele nunca passa por leitura facial (RF-REP-08).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-05</span><span class="req-summary">O app não deve reter a imagem facial capturada além do tempo necessário para enviar ao backend; nenhuma imagem biométrica é persistida localmente no dispositivo.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-06</span><span class="req-summary">A captura deve ser uma prova de vivacidade <strong>ativa</strong> (ex.: vídeo curto seguindo um desafio na tela — virar a cabeça, olhar para um ponto), não uma única foto estática, para dificultar ataques por foto ou vídeo pré-gravado.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-07</span><span class="req-summary">A decisão de correspondência entre a captura e o template cadastrado deve ser tomada no backend (diretamente ou via serviço de biometria terceirizado) — o app nunca reporta, por conta própria, um resultado de correspondência que o backend aceite sem verificação própria.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-08</span><span class="req-summary">O fornecedor de liveness/correspondência facial é uma decisão técnica ainda em aberto, de responsabilidade de quem implementa o backend (candidato principal: AWS Rekognition Face Liveness — ver seção 5). Os endpoints da seção 4.1 refletem o fluxo conceitual de um fornecedor baseado em sessão; nomes de campo exatos podem mudar quando o fornecedor for confirmado, mas o formato de interação com o app (criar sessão → app captura o desafio <strong>diretamente com o fornecedor</strong> → backend confirma o resultado) não deve mudar — é o que preserva a garantia de anti-spoofing da captura ativa (RF-BIO-06).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BIO-09</span><span class="req-summary">: além de servir como credencial de login e segundo fator de assinatura (RF-BIO-03), a leitura facial do cadastro (RF-BIO-01) é comparada (<strong>face match</strong>, capacidade distinta da prova de vivacidade de RF-BIO-06) contra a foto do documento de identidade enviado (RF-CAD-01) — o resultado (score de correspondência) fica disponível para a análise da equipe Fynvex (RF-KYC-02) junto dos demais dados do cadastro. Uma correspondência baixa <strong>não rejeita o cadastro automaticamente</strong> — sinaliza a operação para revisão manual mais atenta, já que fotos de documento antigas ou de baixa qualidade produzem falsos negativos com frequência; é a mesma filosofia de "sinaliza para revisão, não bloqueia sozinho" já aplicada à leitura de Nota Fiscal (RF-ANT-04).</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.4 Dados Bancários</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BANK-01</span><span class="req-summary">O sistema deve coletar: banco (selecionado de lista), agência, conta, tipo de conta (<code>corrente</code> / <code>poupanca</code>) e forma de recebimento (<code>pix</code> / <code>ted</code>).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BANK-02</span><span class="req-summary">Quando a forma de recebimento for <code>pix</code>, o campo de chave/código Pix é obrigatório. O campo aceita <strong>texto livre</strong> (chave CPF/CNPJ, e-mail, telefone ou aleatória) — não há seletor de tipo de chave.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BANK-03</span><span class="req-summary">Os dados bancários informados no cadastro são os mesmos exibidos e editáveis posteriormente em Perfil (RF-PERF-03), sem duplicação de cadastro.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-BANK-04</span><span class="req-summary">Os dados bancários são utilizados exclusivamente para o crédito dos valores de antecipação aprovados — não para envio ou recebimento de cobranças.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.5 Termos de Uso</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TERM-01</span><span class="req-summary">O usuário deve visualizar o texto integral dos Termos de Uso e marcar explicitamente uma caixa de confirmação ("Li e aceito") antes de poder concluir o cadastro.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TERM-02</span><span class="req-summary">O sistema deve registrar a versão do termo aceito, data/hora do aceite e CNPJ associado, de forma imutável.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.6 Análise e Aprovação do Cadastro (KYC)</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-KYC-01</span><span class="req-summary">Enquanto o cadastro estiver com status <code>pending</code>, o app exibe tela informativa ("Seus documentos estão sendo analisados pela equipe administrativa") sem acesso às demais funcionalidades.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-KYC-02</span><span class="req-summary">A análise dos documentos (Contrato Social, Procuração, dados extraídos) é realizada pela equipe Fynvex no backoffice existente — este documento não especifica a interface interna de análise, apenas o contrato de API que ela deve respeitar (ver seção 4).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-KYC-03</span><span class="req-summary">A aprovação do cadastro (<code>kyc_status = approved</code>) deve disparar uma notificação push ao dispositivo do usuário informando que o acesso foi liberado.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-KYC-04</span><span class="req-summary">A rejeição do cadastro (<code>kyc_status = rejected</code>) deve informar ao usuário o motivo e permitir reenvio de documentos corrigidos, sem necessidade de reiniciar o cadastro do zero.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-KYC-05</span><span class="req-summary">A aprovação do cadastro <strong>não gera senha nem credencial adicional</strong> — o próprio CPF + senha já cadastrados no cadastro original passam a valer como credencial de login (ver RF-AUTH-01).</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.7 Tela Início — Lista de Antecipações</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-HOME-01</span><span class="req-summary">A tela inicial pós-login é a lista de solicitações de antecipação da empresa ("Minhas antecipações"), não um dashboard genérico.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-HOME-02</span><span class="req-summary">Cada item da lista exibe: origem/tomador da Nota Fiscal, número da NF, valor líquido, data prevista de crédito e status atual (ver RF-STATUS-01).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-HOME-03</span><span class="req-summary">A tela inicial deve exibir botão de destaque <strong>"+ Nova solicitação"</strong>, sempre visível, levando ao fluxo de solicitação de antecipação (RF-ANT-01) — passando primeiro pela assinatura do Contrato-Mãe, caso ainda não tenha sido realizada (RF-MAE-01).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-HOME-04</span><span class="req-summary">Itens com status <code>aguardando_liquidacao</code> abrem a tela de liquidação (RF-PAG-01). Itens com status <code>credito_efetuado</code> ou <code>liquidada</code> abrem uma tela de comprovante (somente leitura). Os demais status têm sua própria interação especificada em RF-HOME-05 e RF-TER-03 — nenhum item da lista fica sem nenhuma reação ao toque.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-HOME-05</span><span class="req-summary">Itens com status <code>solicitada</code> ou <code>em_analise</code> exibem ação de <strong>"Cancelar solicitação"</strong>, disponível diretamente na lista. Itens com status <code>recusada</code> exibem o motivo da recusa (RF-STATUS-06). Itens com status <code>em_atraso</code> exibem aviso de atraso do pagador, sem ação disponível ao usuário (RF-STATUS-08).</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.8 Solicitar Antecipação — Nota Fiscal</h3>
+<h4 class="sec-heading">1.8.1 Contrato-Mãe (assinatura única)</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-MAE-01</span><span class="req-summary">Antes da <strong>primeira</strong> solicitação de antecipação de uma empresa, o app deve verificar se o <strong>Contrato-Mãe</strong> — acordo-quadro que formaliza a adesão da empresa ao programa de antecipação de recebíveis da Fynvex — já foi assinado. Se não, o fluxo de nova solicitação começa por essa tela em vez do envio da Nota Fiscal (RF-ANT-01).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-MAE-02</span><span class="req-summary">A assinatura do Contrato-Mãe segue o mesmo mecanismo de RF-ANT-07: exibição do texto completo (renderizado pelo app como texto nativo, RF-ANT-07a — não o PDF formal), aceite por checkbox habilitado só após rolar o texto até o fim, e confirmação por segundo fator de leitura facial.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-MAE-03</span><span class="req-summary">Uma vez assinado, o Contrato-Mãe não é solicitado novamente para a mesma empresa — toda solicitação seguinte (desta ou de outra Nota Fiscal) segue direto para RF-ANT-01. O app não deve assumir esse estado como permanente sem confirmação do backend (ver RN-09).</span></div><div class="req-body"></div></div>
+<h4 class="sec-heading">1.8.2 Envio da Nota Fiscal</h4>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-01</span><span class="req-summary">A solicitação de antecipação é sempre iniciada pelo envio de <strong>uma Nota Fiscal</strong> — não há seleção a partir de uma lista pré-existente de recebíveis.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-02</span><span class="req-summary">Arquivos aceitos para a Nota Fiscal: PDF, JPG ou PNG, até 10 MB.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-02a</span><span class="req-summary">: antes do envio, o app exibe um termo de consentimento explícito para o processamento da Nota Fiscal por IA/OCR (checkbox + texto curto, mesmo padrão visual de outros aceites do app) — sem marcar o aceite, o botão de envio permanece desabilitado. Cobre especificamente a leitura automática (RF-ANT-03), distinto do Termo de Uso geral (seção 1.5) e do termo de cessão de cada operação (RF-ANT-07).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-03</span><span class="req-summary">Após o envio, o sistema processa a Nota Fiscal por IA e extrai: número da NF, tomador/convênio, <strong>CNPJ do tomador</strong>, <strong>link/URL de consulta</strong> (quando a NF for uma NFS-e eletrônica com esse recurso), valor e datas de emissão e vencimento — mesmo padrão de RF-CAD-05. O CNPJ do tomador (ou o link, quando disponível) é o que RF-ANT-10/RN-11 usam para identificar quando duas solicitações se referem à mesma NF (pra somar o saldo já usado contra ela) — sem eles extraídos e confirmados, a checagem não teria como distinguir tomadores diferentes com o mesmo número de nota.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-04</span><span class="req-summary">Os dados extraídos da Nota Fiscal devem ser exibidos para **revisão e correção manual** do usuário antes de seguir para a simulação — mesmo padrão de RF-CAD-07: qualquer campo identificado incorretamente pela IA pode ser editado antes de confirmar. Se o usuário chegou aqui a partir do simulador autenticado (RF-SIM-04), valor bruto e vencimento já vêm pré-preenchidos com o que foi simulado — a extração da IA (quando disponível) prevalece como sugestão mais nova, mas o campo continua editável do mesmo jeito. Esta tela distingue dois valores: o <strong>valor total da NF</strong> (extraído/corrigido, campo <code>valor</code>) e o <strong>valor que o usuário quer antecipar nesta operação</strong> (<code>valor_solicitado</code>) — que já nasce pré-preenchido com o <strong>saldo ainda disponível</strong> dessa NF (o valor total, se for a primeira solicitação contra ela; o valor total menos o que já foi antecipado, se não for — RF-ANT-10), e continua editável para um valor menor. O usuário nunca precisa calcular a subtração de cabeça — o campo já chega descontado.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-05</span><span class="req-summary">A simulação exibe: valor bruto, percentual e valor do deságio (RN-01), valor da taxa administrativa e valor líquido estimado, além da data prevista de crédito. O percentual de deságio varia com o prazo da Nota Fiscal (RN-01) — não é um valor fixo exibido antes do envio da NF.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-06</span><span class="req-summary">A tela de revisão final deve exibir todos os valores da simulação mais a identificação da Nota Fiscal e o destino do crédito (conta bancária ou Pix cadastrado), antes da assinatura.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-07</span><span class="req-summary">A confirmação da solicitação exige aceite do termo de cessão (checkbox + texto) seguido de <strong>segundo fator por leitura facial</strong> — mesmo mecanismo de RF-BIO-03. No backend real, o termo de cessão de cada operação corresponde ao "Contrato Borderô" (<code>TipoArquivoEnum::CONTRATO_BORDERO</code>, assinado via Autentique junto com o Contrato-Mãe) — não existe um terceiro documento além desses dois; o nome "termo de cessão" usado neste documento é o mesmo instrumento.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-07a</span><span class="req-summary">: o texto completo exigido em RF-ANT-07 (e, por RF-MAE-02, também no Contrato-Mãe) é renderizado pelo próprio app como texto nativo, no tamanho de fonte da interface — nunca embutindo o PDF formal gerado para a assinatura via Autentique (RN-10), cuja diagramação (fonte pequena, texto justificado, margens de impressão) é pensada para papel/PDF, não para a tela de um celular. O checkbox de aceite só fica habilitado depois que o usuário rolar o texto até o fim — não basta o texto estar visível na tela. O PDF formal assinado (o que de fato tramita no Autentique) fica disponível para consulta posterior no histórico de termos e contratos do Perfil (RF-PERF-05), fora desse momento de leitura.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-08</span><span class="req-summary">Após confirmada a assinatura, a solicitação é criada com status inicial <code>solicitada</code> e o usuário retorna à tela Início (RF-HOME-01), onde a nova solicitação já aparece na lista.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-09</span><span class="req-summary">Uma solicitação de antecipação está sempre vinculada a exatamente uma Nota Fiscal; não há solicitação de antecipação sem Nota Fiscal associada.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-10</span><span class="req-summary">A mesma Nota Fiscal (mesmo número + CNPJ do tomador) <strong>pode</strong> lastrear mais de uma solicitação ativa da mesma empresa — desde que a soma dos valores solicitados (<code>valor_solicitado</code>, RF-ANT-04) não supere o valor total da NF (RN-11). Exemplo: uma NF de R$ 10.000 com R$ 5.000 já antecipados em outra solicitação ativa tem R$ 5.000 de saldo disponível para uma nova. Uma tentativa de solicitar mais do que esse saldo é rejeitada na criação da solicitação, informando o saldo restante e a(s) solicitação(ões) já ativas contra a mesma NF.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-ANT-11</span><span class="req-summary">Quem efetivamente paga o boleto de liquidação da operação depende do vínculo de parceiro da empresa (RF-CAD-11/RN-12): com vínculo <code>confirmado</code>, a liquidação é feita pela plataforma do parceiro — é o tomador quem paga por lá, e o app apenas reflete o status. **Sem vínculo confirmado, é a própria PJ (o médico) quem paga o boleto de liquidação** — o app expõe a tela de pagamento (RF-PAG-01/02) pra isso, não só para acompanhar. Nem toda PJ tem vínculo com um parceiro da Fynvex (RF-CAD-11 é uma autodeclaração opcional); esse é o caminho padrão para quem não tem.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.9 Ciclo de Status da Antecipação</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-01</span><span class="req-summary">Toda solicitação de antecipação segue um dos dez status, mutuamente exclusivos: <table>
+<thead><tr><th>Status</th><th>Significado</th><th>Ação do usuário</th></tr></thead>
+<tbody><tr><td><code>aguardando_assinatura</code></td><td>Só ocorre para antecipação originada por terceiro (RF-TER-01) — já criada, aguardando o representante assinar</td><td>Aprovar (RF-TER-05) ou recusar (RF-TER-07)</td></tr><tr><td><code>solicitada</code></td><td>Enviada pelo usuário, aguardando início da análise</td><td>Cancelar solicitação</td></tr><tr><td><code>em_analise</code></td><td>Análise de crédito em curso pela equipe Fynvex (SLA: RN-08)</td><td>Cancelar solicitação</td></tr><tr><td><code>aprovada</code></td><td>Resultado positivo da análise; crédito em processamento</td><td>—</td></tr><tr><td><code>recusada</code></td><td>Resultado negativo da análise, com motivo (RF-STATUS-06)</td><td>—</td></tr><tr><td><code>credito_efetuado</code></td><td>Valor líquido pago na conta/Pix da PJ (RN-07)</td><td>Ver comprovante</td></tr><tr><td><code>aguardando_liquidacao</code></td><td>Boleto de liquidação emitido; aguardando pagamento pelo tomador/parceiro</td><td>Ver pagamento (RF-PAG-01), quando aplicável</td></tr><tr><td><code>liquidada</code></td><td>Boleto pago; operação encerrada com sucesso</td><td>Ver comprovante</td></tr><tr><td><code>em_atraso</code></td><td>Tomador não liquidou no vencimento</td><td>— (RF-STATUS-08)</td></tr><tr><td><code>cancelada</code></td><td>Cancelada pelo próprio usuário</td><td>—</td></tr></tbody></table></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-02</span><span class="req-summary">As transições válidas são: <code>aguardando_assinatura → solicitada</code> (RF-TER-05, aprovação) <code>|cancelada</code> (RF-TER-07, recusa); <code>solicitada → em_analise → aprovada|recusada</code>; <code>aprovada → credito_efetuado → aguardando_liquidacao → liquidada|em_atraso</code>; <code>em_atraso → liquidada</code> (liquidação recuperada fora do prazo); <code>solicitada|em_analise → cancelada</code> (cancelamento pelo usuário). Nenhuma outra transição é permitida.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-03</span><span class="req-summary">As transições <code>em_analise → aprovada|recusada</code> e `aguardando_liquidacao → liquidada|em_atraso` são realizadas pela equipe Fynvex/backoffice ou por webhook do provedor de boletos (RF-PAG-04) — nunca por ação direta do app, que apenas reflete o status corrente. A transição <code>aprovada → credito_efetuado → aguardando_liquidacao</code> é automática, disparada pelo próprio backend ao processar o crédito (RN-03: até 1 dia útil após aprovação).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-04</span><span class="req-summary">A transição para <code>aprovada</code>/<code>credito_efetuado</code> e para <code>aguardando_liquidacao</code> deve disparar notificação push ao usuário — ver RF-PUSH-02 para a lista completa de eventos.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-05</span><span class="req-summary">O usuário só pode cancelar (<code>→ cancelada</code>) enquanto o status for <code>solicitada</code> ou <code>em_analise</code>. A partir de <code>aprovada</code>, a solicitação é irrevogável pelo usuário — apenas os estados terminais (<code>recusada</code>, <code>liquidada</code>, <code>cancelada</code>) não têm mais transição possível. O status <code>aguardando_assinatura</code> não é cancelável por essa ação — a decisão ali é aprovar ou recusar (RF-TER-05/07), não cancelar.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-06</span><span class="req-summary">O status <code>recusada</code> deve ser acompanhado de motivo, visível ao usuário na lista/detalhe da solicitação.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-07</span><span class="req-summary">O status de liquidação (<code>aguardando_liquidacao</code> → <code>liquidada</code>) é uma propriedade da própria solicitação (não uma entidade de cobrança separada). Reflete o pagamento do boleto — pelo tomador, via plataforma do parceiro, quando há vínculo <code>confirmado</code>; pela própria PJ, quando não há (RF-ANT-11, RF-PAG).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-STATUS-08</span><span class="req-summary">O status <code>em_atraso</code> é apenas informativo para o usuário no MVP — a tratativa de cobrança do tomador em atraso ocorre fora do app (backoffice/parceiro), conforme RN-09.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.10 Liquidação da Operação</h3>
+<blockquote><strong>Nota de arquitetura</strong>: a taxa administrativa é <strong>exclusivamente</strong> descontada do valor líquido na simulação (RF-ANT-05) — não há cobrança avulsa dela ao usuário, em nenhum momento. Já o boleto de liquidação desta seção é outra coisa: resgata o valor bruto que a Fynvex adiantou, e quem o paga depende do vínculo de parceiro da empresa (RF-ANT-11) — o tomador da Nota Fiscal, através da plataforma do parceiro, quando o vínculo é <code>confirmado</code>; a própria PJ (médico) diretamente, quando não é.</blockquote>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-01</span><span class="req-summary">Uma solicitação com status <code>aguardando_liquidacao</code> expõe uma tela de acompanhamento específica daquela solicitação, exibindo: valor da Nota Fiscal, tomador, data de vencimento e status de liquidação (<code>pending</code> / <code>paid</code>). O conteúdo exibido depende do vínculo de parceiro da empresa (RF-CAD-13): <ul><li>Vínculo <code>confirmado</code>: apenas o status — a liquidação corre pela plataforma do parceiro (RF-ANT-11), sem ação disponível no app.</li><li>Vínculo <code>nao_vinculado</code> ou <code>pendente</code>: a tela exibe também o QR Code/boleto (RF-PAG-02) — não é só acompanhamento, é o boleto que a própria PJ paga, já que não há parceiro para fazer isso por ela (RF-ANT-11).</li></ul></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-02</span><span class="req-summary">Quando exibido (RF-PAG-01), o boleto de liquidação deve ser oferecido em **dois formatos simultâneos**: QR Code Pix e código de barras, ambos com opção de cópia do respectivo código (copia-e-cola / linha digitável) para a área de transferência.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-03</span><span class="req-summary">O QR Code e o código de barras devem ser gerados/obtidos a partir do provedor de boletos/split integrado (ver seção 4) — o app não gera esses códigos localmente.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-04</span><span class="req-summary">A confirmação efetiva da liquidação ocorre por **webhook do provedor de boletos/split** ao backend, nunca por ação direta do app. O app apenas exibe o status mais recente retornado pelo backend e é notificado (push) quando a liquidação é confirmada. O mesmo webhook aciona o split automático: parcela da Fynvex e cashback do parceiro (quando houver vínculo <code>confirmado</code>) creditado diretamente na conta do parceiro — sem trânsito pela Fynvex nem visibilidade no app (RN-13).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-05</span><span class="req-summary">Após a liquidação confirmada, a tela passa a exibir aviso de confirmação em vez das opções de QR Code/código de barras (ou do status pendente, quando o vínculo for <code>confirmado</code>).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PAG-06</span><span class="req-summary">O status de liquidação (<code>pending</code>/<code>paid</code>) é uma propriedade da própria solicitação de antecipação (RF-STATUS-07), não uma entidade de cobrança separada.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.11 Perfil</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PERF-01</span><span class="req-summary">A tela de Perfil exibe: nome (razão social/nome fantasia), CNPJ, status de cada documento do cadastro (Contrato Social, documento de identidade, Procuração, Leitura facial) e o status do vínculo com parceiro (RF-CAD-13), quando declarado.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PERF-02</span><span class="req-summary">A tela de Perfil oferece acesso a "Meus dados bancários", reaproveitando os mesmos campos de RF-BANK-01, em modo de edição.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PERF-03</span><span class="req-summary">Alteração dos dados bancários no Perfil deve valer para futuras antecipações, sem afetar solicitações já criadas (snapshot — ver RN-06).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PERF-04</span><span class="req-summary">O Perfil oferece ação de "Sair", que executa o logout (RF-AUTH-07).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PERF-05</span><span class="req-summary">O Perfil oferece acesso ao suporte (RF-SUP-01) e ao histórico de termos/contratos assinados (Termo de Uso, Contrato-Mãe, Termos de Cessão de cada operação).</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.12 Notificações Push</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PUSH-01</span><span class="req-summary">O app deve registrar o token de notificação push do dispositivo junto ao backend imediatamente após o primeiro login bem-sucedido.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PUSH-02</span><span class="req-summary">Eventos que disparam notificação push ao usuário: <ul><li>Cadastro aprovado (RF-KYC-03)</li><li>Cadastro rejeitado (RF-KYC-04)</li><li>Solicitação aprovada / crédito efetuado (RF-STATUS-04)</li><li>Solicitação recusada, com motivo (RF-STATUS-06)</li><li>Boleto de liquidação emitido (<code>aguardando_liquidacao</code>)</li><li>Liquidação confirmada (RF-PAG-04)</li><li>Nova antecipação originada por gestora ou hospital convenente, aguardando aprovação (RF-TER-02)</li></ul></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PUSH-03</span><span class="req-summary">A falha no registro do token de push não deve impedir o uso do app — é uma funcionalidade de melhor esforço.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-PUSH-04</span><span class="req-summary">Todo evento de RF-PUSH-02 deve também ser espelhado no WhatsApp oficial da Fynvex (número/conta cadastrado no perfil do usuário), como canal complementar ao push — ver integração na seção 5. A falha no espelhamento por WhatsApp não deve impedir ou atrasar o envio do push (RF-PUSH-03 aplica-se igualmente aqui).</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.13 Suporte</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-SUP-01</span><span class="req-summary">O app deve oferecer acesso direto ao suporte via <strong>WhatsApp Business</strong> (N2 Fynvex) e um FAQ embutido, acessível a partir do Perfil (RF-PERF-01). Para PJs com vínculo de parceiro <code>confirmado</code> (RF-CAD-13), a orientação de primeiro nível (N1) é feita pelo próprio parceiro (ex.: Departamento de Convênios), fora do app — o app não precisa distinguir esse caso na UI, apenas manter o canal N2 sempre disponível como alternativa.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.14 Simulador Aberto (Pré-login)</h3>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-SIM-01</span><span class="req-summary">O app deve oferecer um simulador acessível <strong>sem cadastro e sem login</strong>, a partir da tela de entrada (RF-AUTH-05 aplica-se apenas ao fluxo autenticado — este é um fluxo paralelo, não um substituto). O usuário informa valor bruto da Nota Fiscal e data de vencimento; o app exibe o valor líquido estimado com os mesmos componentes de RF-ANT-05 (deságio, taxa administrativa), calculados pelo mesmo motor de RN-14 — nunca uma cópia/aproximação local da fórmula.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-SIM-02</span><span class="req-summary">Ao final da simulação, o app exibe uma chamada para ação ("Cadastre-se e receba em até 24h úteis") que leva ao fluxo de novo cadastro (RF-CAD-01), sem perder os valores já simulados.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-SIM-03</span><span class="req-summary">O resultado do simulador não é persistido nem vinculado a nenhuma Nota Fiscal real — é puramente ilustrativo até que o usuário efetivamente envie uma Nota Fiscal (RF-ANT-01) já autenticado.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-SIM-04</span><span class="req-summary">: o mesmo simulador (RF-SIM-01) é acessível a partir da Home, já logado — não só pré-login. Autenticado, o botão final muda de "Cadastre-se" (RF-SIM-02) para "Solicitar com estes valores", que leva a RF-ANT-01 (upload da Nota Fiscal) levando valor bruto e data de vencimento simulados como <strong>preenchimento inicial</strong> da revisão (RF-ANT-04) — nunca uma substituição da Nota Fiscal real: a leitura por IA (RF-ANT-03) e a correção manual do usuário sempre podem sobrescrever esses valores. A simulação não deixa de precisar de uma NF real por trás (RN-02) — só evita que o usuário digite os mesmos números duas vezes.</span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.15 Perfis de Acesso e Múltiplos Representantes</h3>
+<p>Uma empresa pode ter mais de uma pessoa com acesso próprio ao app. O que cada uma pode fazer depende do seu <strong>perfil de acesso</strong>, e os dois perfis existem por um critério jurídico, não administrativo: quem pode comprometer a empresa financeiramente (solicitar, assinar, mover dados bancários) versus quem só acompanha.</p>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-01</span><span class="req-summary">O primeiro representante de uma empresa é quem conclui o cadastro original (RF-CAD-01) — o responsável legal identificado no Contrato Social. Nasce com perfil de acesso <code>representante_legal</code>, sem convite nem etapa adicional além da já exigida pelo cadastro (RF-KYC-02).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-02</span><span class="req-summary">Existem dois perfis de acesso: <code>representante_legal</code> e <code>visualizador</code>. <ul><li><code>representante_legal</code>: solicita e assina antecipações (RF-ANT-01/07), edita dados bancários (RF-PERF-02), declara/altera vínculo de parceiro (RF-CAD-11) e convida novos representantes de qualquer um dos dois perfis (RF-REP-03). Tem senha própria e leitura facial cadastrada (RF-BIO-04) — entra pelo mesmo login de RF-AUTH-01.</li><li><code>visualizador</code>: só acompanha a lista de antecipações já feitas (mesma tela de RF-HOME-01, sem nenhuma ação de solicitar/assinar/recusar disponível) e não vê dados bancários. Entra pelo mesmo login de CPF + senha de RF-AUTH-01 — nunca passa por leitura facial, não porque seu login seja diferente, mas porque nunca chega a uma ação que a exija (RF-BIO-03/RF-REP-08).</li></ul></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-03</span><span class="req-summary">Só um <code>representante_legal</code> pode convidar um novo representante, de qualquer um dos dois perfis — o convite se ramifica em dois fluxos bem diferentes conforme o perfil escolhido: <ul><li><strong>Convite de <code>representante_legal</code></strong> (ex.: um sócio com procuração própria, que vai também poder solicitar/assinar): o convidado passa pelo mesmo cadastro biométrico de qualquer representante_legal — define senha, faz sua própria leitura facial (RF-BIO-01), envia seu documento de identidade (mesma validação facial de RF-BIO-09) e <strong>anexa sua Procuração</strong> (mesmo tipo de documento de RF-CAD-01, aplicável por procurador) — e só fica <code>ativo</code> após revisão da equipe Fynvex, o <strong>mesmo gate de RF-KYC-02</strong> do cadastro original. Isso é deliberado: sem essa revisão, um representante_legal comprometido poderia criar outros com poder idêntico sem nenhuma checagem externa.</li><li><strong>Convite de <code>visualizador</code></strong> (um sócio que só quer acompanhar): quem convida já informa o <strong>CPF</strong> do convidado no próprio convite (é o identificador de login, RF-AUTH-01 — sem isso a pessoa nunca conseguiria entrar depois). O convidado recebe um código por e-mail (mesmo mecanismo de RF-AUTH-08), define sua senha a partir dele, e fica <code>ativo</code> <strong>imediatamente</strong> — sem leitura facial, sem envio de documento, sem revisão da equipe Fynvex. Isso também é deliberado, na direção oposta: como esse perfil não pode mover dinheiro nem alterar nada, o gate pesado do outro fluxo não se justifica aqui.</li></ul></span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-04</span><span class="req-summary">Nunca deixar a empresa sem nenhum representante <code>representante_legal</code> ativo. Qualquer ação que resultaria nisso (remover o último, ou rebaixá-lo a <code>visualizador</code>, ou desativá-lo) deve ser bloqueada com mensagem clara, independente de quem a solicitou.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-05</span><span class="req-summary">Remover ou desativar um representante invalida imediatamente a sessão ativa dele (mesmo mecanismo de revogação de RF-AUTH-07) — a pessoa removida não deve manter acesso pelo resto da validade do token só porque já estava logada.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-06</span><span class="req-summary">O Perfil (RF-PERF-01) exibe os dados do representante logado (nome, cargo, perfil de acesso) além dos dados já existentes da empresa. A entrada "Gerenciar representantes" aparece para os dois perfis — listar quem tem acesso à empresa não é uma ação restrita (a consulta correspondente é aberta a qualquer perfil ativo). O que fica restrito a <code>representante_legal</code> são as ações dentro dessa tela: convidar, alterar perfil de acesso e remover/desativar um representante — um <code>visualizador</code> só acompanha a lista, sem nenhum desses botões disponíveis.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-07</span><span class="req-summary">Todo representante tem um e-mail próprio — coletado no cadastro original (RF-CAD-01, primeiro representante) ou no convite (RF-REP-03, demais). Serve à recuperação de conta (RF-AUTH-08) e, no convite de <code>visualizador</code>, ao código que ativa a conta (RF-REP-03) — não é o identificador de login em nenhum dos dois perfis, que é sempre o <strong>CPF</strong> (RF-AUTH-01). Não há envio de comunicação de marketing em nenhum caso.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-REP-08</span><span class="req-summary">: os dois perfis entram pelo mesmo CPF + senha (RF-AUTH-01) — não há tela de login alternativa nem campo de e-mail na entrada. A diferença entre eles está inteiramente em quais ações ficam disponíveis depois (RF-REP-02): um <code>visualizador</code> nunca vê leitura facial simplesmente porque nunca chega a uma ação que a exija (RF-BIO-03), não porque seu CPF leve a um fluxo de autenticação diferente. Isso é proporcional ao risco de cada perfil: um <code>visualizador</code> não pode mover dinheiro nem alterar nada, só visualizar — exigir dele o mesmo padrão de segurança forte de quem assina antecipações não faria sentido. <blockquote>Nota de simplificação: como o login é por CPF (RF-AUTH-01), que já é pessoal por natureza, nunca existe uma tela adicional para "escolher quem é você" — o próprio CPF já identifica exatamente qual representante está entrando, mesmo numa empresa com vários. Isso também evita ter que expor, antes da autenticação, uma lista de nomes de quem trabalha em determinada empresa a partir só do CNPJ — informação que, aliás, o login nem usa mais (RF-AUTH-01).</blockquote></span></div><div class="req-body"></div></div>
+<hr>
+<h3 class="sec-heading">1.16 Antecipação Originada por Terceiro (Gestora ou Hospital Convenente)</h3>
+<p>Além da solicitação self-service (RF-ANT-01, o representante sobe a Nota Fiscal e revisa os dados), uma antecipação pode ser <strong>originada por um terceiro autorizado</strong>, que já preenche todos os dados da operação num sistema à parte — fora deste app. Dois terceiros possíveis:</p>
+<ul><li>uma <strong>gestora</strong> que administra a empresa (mesmo vínculo de parceiro de RF-CAD-11), pelo próprio sistema web já usado por gestoras hoje;</li><li>um <strong>hospital/tomador com convênio próprio com a Fynvex</strong> — aqui o hospital é ao mesmo tempo o tomador da NF (RF-ANT) *e* quem originou a solicitação, papel que RF-CAD-11/RN-12 não cobrem (lá o parceiro só atribui cashback; aqui ele efetivamente cria a operação).</li></ul>
+<p>A administração desses convênios/vínculos (cadastro do terceiro, credenciais do sistema que cria a operação) é inteiramente backoffice — fora do escopo deste app, mesmo critério já aplicado à administração de parceiros/gestoras (ver Fora de Escopo).</p>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-01</span><span class="req-summary">Uma antecipação originada por terceiro chega ao app já com todos os dados preenchidos (NF, tomador, valor, vencimento, deságio) — o representante da empresa não faz upload nem simula nada; ele <strong>revisa e decide</strong>: aprovar (RF-TER-05) ou recusar (RF-TER-07).</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-02</span><span class="req-summary">Ao ser originada, a operação nasce no mesmo estado interno que uma solicitação self-service atinge depois da simulação, antes da assinatura (<code>aguardando_assinatura</code>, ver RF-ANT-06) — não existe um status separado de "aguardando aprovação de terceiro"; a aprovação <strong>é</strong> a assinatura de RF-ANT-07/08, reaproveitada sem alteração.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-03</span><span class="req-summary">O representante recebe uma notificação push (RF-PUSH-02 ganha este evento) e, adicionalmente, a operação aparece na lista de "Minhas antecipações" (RF-HOME-02) mesmo antes de aprovada — nunca depender só do push chegar/ser tocado para o representante saber que existe algo pendente.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-04</span><span class="req-summary">A tela de revisão dessa operação (mesmo layout de RF-ANT-06) é <strong>somente leitura</strong> quanto aos dados da NF — vieram do terceiro, não do representante, então não há o que corrigir manualmente aqui (diferente de RF-ANT-04, que trata dados extraídos pela própria IA a partir do que o representante enviou). A decisão em si (aprovar/recusar) é o que o representante controla.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-05</span><span class="req-summary">A aprovação exige o mesmo segundo fator de leitura facial de qualquer assinatura (RF-ANT-07) — não existe aprovação sem esse gesto, independentemente da operação ter sido originada fora do app. Só um <code>representante_legal</code> ativo pode aprovar (mesmo critério de RF-REP-02 para assinatura de solicitações próprias) — um <code>visualizador</code> nem vê a ação de aprovar/recusar, só o resultado depois de decidido.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-06</span><span class="req-summary">Se o app não tiver sessão ativa quando a notificação chegar, tocá-la deve levar primeiro ao login completo (RF-AUTH-01/04a) e só então à tela de revisão/aprovação — nunca abrir uma tela de aprovação sem autenticação plena, mesmo que o destino pretendido seja conhecido pelo payload da notificação.</span></div><div class="req-body"></div></div>
+<div class="req"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RF-TER-07</span><span class="req-summary">: ao lado de "Aprovar", a tela de revisão oferece "Recusar". Diferente da aprovação, recusar <strong>não exige leitura facial</strong> — não movimenta dinheiro nem compromete a empresa, é só a decisão de não seguir com aquela operação especificamente; pode ter uma confirmação simples ("tem certeza?"), nunca o segundo fator biométrico. Ao recusar, o status muda direto de <code>aguardando_assinatura</code> para <code>cancelada</code> (RF-STATUS-01) — reaproveita o status já existente em vez de criar um novo, já que o significado é o mesmo: a operação não segue adiante, por decisão da própria empresa. <strong>A recusa é definitiva</strong> — não há caminho de "reconsiderar" ou aceitar depois uma operação já recusada; se o terceiro quiser tentar de novo, precisa originar uma nova operação (sujeita ao limite de saldo de RN-11, se for a mesma NF).</span></div><div class="req-body"></div></div>
+<hr>
+<h2 class="sec-heading">2. Requisitos Não Funcionais</h2>
+<h3 class="sec-heading">2.1 Segurança</h3>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-01</span><span class="req-summary">O template biométrico (leitura facial) é dado pessoal sensível conforme LGPD — deve ser armazenado criptografado em repouso e nunca transmitido ou logado em texto claro.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-02</span><span class="req-summary">Toda comunicação entre app e backend deve ocorrer sobre HTTPS/TLS 1.2 ou superior.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-03</span><span class="req-summary">O token de sessão (JWT) deve ter validade máxima de 7 dias e ser revogável no logout (RF-AUTH-07) e pela equipe Fynvex em caso de suspeita de comprometimento.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-04</span><span class="req-summary">Uploads de documentos (Contrato Social, Procuração, Nota Fiscal) devem ser armazenados em local não publicamente acessível, com URLs de acesso assinadas e temporárias.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-05</span><span class="req-summary">Arquivos enviados são validados por tipo MIME e tamanho antes do processamento pela IA de extração, rejeitando extensões não permitidas independentemente do nome do arquivo.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-06</span><span class="req-summary">Dados bancários e Pix armazenados devem seguir o mesmo padrão de proteção em repouso já aplicado pelo backend existente aos dados de <code>medico</code>/<code>empresa</code>.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-07</span><span class="req-summary">Endpoints autenticados devem validar o token JWT em toda requisição, retornando <code>401 Unauthorized</code> para token ausente, inválido ou expirado.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-08</span><span class="req-summary">Os seguintes endpoints devem aplicar rate limiting de 5 tentativas por CPF/CNPJ (o que for a chave de busca) a cada 15 minutos, retornando <code>429 Too Many Requests</code> com tempo de espera ao exceder o limite: verificação de CPF no login (RF-AUTH-02), validação de senha (RF-AUTH-03), verificação de CNPJ no cadastro (RF-CAD-01), leitura facial em qualquer momento de assinatura (RF-ANT-07/RF-MAE-02/RF-TER-05) e código de recuperação de conta (RF-AUTH-08).</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.2 Desempenho</h3>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-09</span><span class="req-summary">A leitura por IA (Contrato Social ou Nota Fiscal) deve concluir em até <strong>15 segundos</strong> em condições normais; o app deve comunicar tempos maiores sem travar a interface.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-10</span><span class="req-summary">O cálculo de simulação (deságio/taxa administrativa/valor líquido) deve responder em até 2 segundos.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-11</span><span class="req-summary">A geração/consulta do QR Code e código de barras de pagamento deve responder em até 3 segundos.</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.3 Conformidade LGPD</h3>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-12</span><span class="req-summary">Dados pessoais do responsável legal (nome, CPF) extraídos do Contrato Social devem ter a mesma base legal e finalidade já aplicadas pelo backend a dados de <code>socio</code>/<code>medico</code>.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-13</span><span class="req-summary">O usuário deve ser informado, na tela de cadastro da leitura facial, da finalidade do uso do dado biométrico (autenticação e assinatura), antes da captura.</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.4 Disponibilidade e Operação</h3>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-14</span><span class="req-summary">Os novos endpoints devem expor código de erro estruturado (<code>error_code</code> + <code>message</code>) em respostas de erro, permitindo tratamento específico pelo app sem depender de parsing de texto livre.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-15</span><span class="req-summary">Falhas do serviço de leitura por IA (indisponibilidade, timeout) devem retornar erro identificável, permitindo ao app oferecer nova tentativa sem perda dos dados já enviados (CNPJ/documento).</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.5 Segurança do Aplicativo (Cliente Móvel)</h3>
+<p>Requisitos de segurança do cliente móvel (app React Native) que protegem três superfícies distintas: o canal de comunicação com o backend (certificate pinning, RNF-16), o dispositivo em si quando comprometido por root/jailbreak (RNF-17), e a integridade da sessão e dos dados sensíveis mantidos ou registrados localmente — invalidação de token, timeout em segundo plano, armazenamento do token/senha, build de produção e redação de logs (RNF-18 a RNF-22). Nenhum item abaixo é opcional: o app autentica por biometria, assina operações financeiras em nome da empresa e trafega dados bancários — uma lacuna em qualquer um desses controles (certificado não validado, sessão que nunca expira em segundo plano, log que grava um token em texto claro) expõe a operação financeira da PJ, não apenas dados do app.</p>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-16</span><span class="req-summary">O app deve validar o certificado TLS do backend por <strong>certificate pinning</strong>, rejeitando a conexão se o certificado apresentado não corresponder ao(s) pinado(s), mesmo que a cadeia seja válida para o sistema operacional.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-17</span><span class="req-summary">O app deve detectar dispositivos com root/jailbreak ou em execução sobre emulador. No mínimo, deve alertar o usuário e sinalizar o evento ao backend junto da sessão (para escrutínio adicional); bloquear totalmente o uso nesses dispositivos é decisão de produto/risco a confirmar antes da implementação.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-18</span><span class="req-summary">O tratamento de <code>401 Unauthorized</code> deve ser **centralizado no interceptor de resposta do cliente HTTP** (não replicado tela a tela): ao receber 401 em qualquer requisição autenticada, o app deve limpar o token do keychain/keystore e redirecionar para o login imediatamente.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-19</span><span class="req-summary">O app não exige nenhuma verificação adicional (senha ou leitura facial) só por causa de tempo em segundo plano — retomar a sessão depois de qualquer período em background segue exatamente o mesmo caminho silencioso de RF-AUTH-04a. O único momento em que a leitura facial é exigida é a assinatura de algo (RF-BIO-03), independentemente de quanto tempo o app ficou em segundo plano antes disso.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-20</span><span class="req-summary">A gravação do token de sessão no keychain/keystore deve usar controle de acesso explícito equivalente a <code>WHEN_UNLOCKED_THIS_DEVICE_ONLY</code> — nunca incluído em backup/sincronização de nuvem do dispositivo, acessível somente com o aparelho desbloqueado.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-21</span><span class="req-summary">A build de produção (release) deve ter ofuscação/minificação de código habilitada (ProGuard/R8 no Android, equivalente no iOS) e ser assinada com uma chave de release dedicada — nunca com o keystore/certificado de debug.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-22</span><span class="req-summary">Nenhum log, ferramenta de crash reporting ou analytics pode registrar, em texto claro, token de sessão, template biométrico, CPF/CNPJ completo ou dados bancários; qualquer ferramenta de observabilidade adotada deve ter redação desses campos configurada antes de ir a produção.</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.6 Identidade Visual e Acessibilidade</h3>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-23</span><span class="req-summary">Paleta de marca do app: navy <code>#0F2137</code>, ciano <code>#00A3E4</code>, azul <code>#124B9A</code>; tipografia Poppins. Esta é a paleta de produto/marketing — distinta da paleta do backoffice administrativo existente (AdminLTE, não customizada) e também distinta das cores até então aplicadas no protótipo/app (<code>#041324</code>/<code>#095dc1</code>/<code>#1d98e5</code>, herdadas do CSS do site institucional legado). Ao divergirem, esta paleta prevalece para telas voltadas ao usuário final da PJ médica.</span></div><div class="req-body"></div></div>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-24</span><span class="req-summary">Fontes com escala ajustável pelo sistema operacional, contraste mínimo AA (WCAG) em texto e ícones, e suporte a leitor de tela nas jornadas principais (login, nova solicitação, acompanhamento).</span></div><div class="req-body"></div></div>
+<h3 class="sec-heading">2.7 Conectividade</h3>
+<p>Praticamente toda tela do app depende de uma chamada de rede (login, leitura facial, simulação, assinatura, pagamento) — não há, nem deve haver, um modo "offline" que permita concluir essas ações sem conexão e sincronizar depois. Para uma operação financeira (assinatura de cessão, solicitação de antecipação), enfileirar a ação offline para reenvio automático é um risco, não uma conveniência: pode gerar duplicidade ou assinar num momento diferente do que o usuário efetivamente confirmou. O tratamento correto é detectar e comunicar a falta de conexão claramente, nunca tentar reenviar em segundo plano.</p>
+<div class="req req-rnf"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RNF-25</span><span class="req-summary">O app deve detectar a falta de conectividade com a internet (não apenas erros de resposta do backend) e, ao detectar, exibir uma mensagem específica ("Sem conexão com a internet") e retornar à tela de login — mesmo padrão de RNF-18 (401 centralizado no interceptor), aplicado à ausência de rede em vez de à sessão expirada. Isso evita deixar o usuário parado no meio de um fluxo (ex.: leitura facial, assinatura) sem conseguir prosseguir nem voltar: login é o único ponto da jornada que não depende de estado em andamento, então é o destino seguro para retomar quando a conexão voltar.</span></div><div class="req-body"></div></div>
+<hr>
+<h2 class="sec-heading">3. Regras de Negócio</h2>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-01</span><span class="req-summary">: Um CNPJ só pode ter um cadastro ativo na plataforma. Nova tentativa de cadastro com CNPJ já existente deve reconduzir ao cadastro existente (e seu status atual), não criar um segundo registro.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-02</span><span class="req-summary">: Cada solicitação de antecipação corresponde a exatamente uma Nota Fiscal informada; não há antecipação combinando múltiplas notas em uma única solicitação.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-03</span><span class="req-summary">: Uma solicitação só pode ser cancelada pelo usuário enquanto estiver <code>solicitada</code> ou <code>em_analise</code> (RF-STATUS-05).</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-04</span><span class="req-summary">: a senha (RF-AUTH-01) é vinculada ao representante, não à empresa, e criada uma única vez. No primeiro login bem-sucedido num dispositivo, o app a armazena em local seguro (mesmo controle de acesso do token, RNF-20) para reenvio automático em logins seguintes nesse mesmo dispositivo — mas a leitura facial nunca é dispensada por causa disso; ela é obrigatória tanto para login quanto para confirmar uma solicitação de antecipação (RF-ANT-07), sempre. Falha repetida da biometria ou perda do dispositivo tem um caminho próprio — recuperação de conta por e-mail (RF-AUTH-08) — que também sempre exige um segundo fator (o código por e-mail); login só por senha, sem nenhum segundo fator, nunca é um caminho válido, nem como recuperação.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-05</span><span class="req-summary">: O status de liquidação (<code>aguardando_liquidacao</code> → <code>liquidada</code>/<code>em_atraso</code>) só é alterado mediante webhook validado do provedor de boletos/split (RF-PAG-04). Nenhuma ação do app altera esse status diretamente.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-06</span><span class="req-summary">: Deságio, taxa administrativa e valor líquido são calculados e gravados no momento da criação da solicitação (RF-ANT-08). Alterações posteriores na taxa padrão da plataforma não afetam solicitações já criadas.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-07</span><span class="req-summary">: O crédito de uma antecipação aprovada utiliza os dados bancários vigentes no cadastro da empresa no momento da aprovação, não os vigentes no momento da solicitação, caso tenham sido alterados entre uma etapa e outra.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-08</span><span class="req-summary">: A análise de crédito (<code>em_analise</code>) tem meta de conclusão em até <strong>24 horas úteis</strong> a partir da criação da solicitação; o crédito à PJ, quando aprovada, em até <strong>1 dia útil</strong> após a aprovação (RF-STATUS-03). Ambos são metas operacionais da equipe Fynvex, não um limite técnico imposto pelo app — o app não bloqueia nem rejeita nada com base neles, apenas reflete o status corrente.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-09</span><span class="req-summary">: O app não deve cachear localmente, de forma permanente, que o Contrato-Mãe já foi assinado (RF-MAE-03) — o status deve ser confirmado pelo backend a cada nova solicitação, pois apenas ele tem autoridade sobre esse estado.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-10</span><span class="req-summary">: A confirmação por checkbox + leitura facial no app (RF-ANT-07, RF-MAE-02) é o gesto de consentimento do usuário — ela não substitui a assinatura eletrônica formal. O backend é responsável por gerar e processar essa assinatura via Autentique (mesmo mecanismo já usado pelo backoffice existente), sem exigir do usuário nenhuma ação adicional fora do app.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-11</span><span class="req-summary">: A mesma Nota Fiscal (identificada por número + CNPJ do tomador, ou pelo link/URL da nota — quando se tratar de uma NFS-e eletrônica com link de consulta próprio) pode lastrear mais de uma solicitação simultaneamente ativa — isto é, com status diferente de <code>recusada</code> ou <code>cancelada</code> — mas a soma dos <code>valor_solicitado</code> de todas as solicitações ativas contra essa NF nunca pode superar o valor total da nota, nem da mesma empresa, nem de empresas diferentes (RF-ANT-10). O saldo disponível é sempre <code>valor total da NF</code> menos a soma já comprometida por solicitações ativas — **incluindo as já <code>liquidada</code>**: uma vez que a solicitação é criada (RF-ANT-08), a cessão daquele valor já ocorreu, o boleto ter sido pago depois não devolve saldo. Quando aplicável ao tipo de ativo, cada cessão é registrada em registradora de recebíveis (seção 5) como camada adicional de prevenção contra dupla cessão, além desse limite de valor.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-12</span><span class="req-summary">: uma solicitação originada por deep link da plataforma do parceiro (RF-CAD-14) tem o vínculo atribuído automaticamente, sem depender de autodeclaração. Uma solicitação originada dentro do próprio app com autodeclaração (RF-CAD-11) só recebe o vínculo <code>confirmado</code> após validação contra a base do parceiro (RF-CAD-12); enquanto <code>pendente</code> ou se a validação falhar (<code>nao_vinculado</code>), a operação segue normalmente, sem cashback nem alteração na tela de liquidação (RF-PAG-01).</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-13</span><span class="req-summary">: quando o vínculo da empresa é <code>confirmado</code>, o percentual de cashback do parceiro sobre o deságio cobrado (hoje 10% a 15%, parametrizável por parceiro) é executado via split automático no pagamento do boleto de liquidação, direto na conta do parceiro — nunca transita pela Fynvex nem é exposto ao usuário do app (RF-PAG-04).</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-14</span><span class="req-summary">: o percentual de deságio (RF-ANT-05) é de **3,95% aplicado integralmente** para Notas Fiscais com prazo de até 30 dias corridos entre a data da solicitação e a data de vencimento; a partir do 31º dia, incide um <strong>acréscimo pro rata die</strong> sobre esse percentual-base. O fator-base e a fórmula de acréscimo são parametrizáveis no backoffice por perfil, parceiro e campanha (ex.: condição promocional na semana do Dia do Médico) — o app nunca assume um valor fixo, sempre exibe o que a simulação (RF-ANT-05, RF-SIM-01) retornar. Não há prazo mínimo que bloqueie a criação da solicitação — uma NF com vencimento mais próximo apenas resulta em deságio maior, nunca em rejeição.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-15</span><span class="req-summary">: nenhuma empresa pode ficar sem nenhum representante <code>representante_legal</code> <code>ativo</code> (RF-REP-04). Remoção, desativação ou rebaixamento de perfil que resultaria nisso é sempre bloqueado, independentemente de quem executa a ação — inclusive o próprio representante_legal tentando se auto-rebaixar/remover sendo o último.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-16</span><span class="req-summary">: remover ou desativar um representante (RF-REP-05) invalida a sessão ativa dele no backend imediatamente (mesma revogação de RF-AUTH-07) — nunca só um bloqueio de login futuro, já que o token de sessão (padrão 7 dias, RF-AUTH-04) continuaria válido até expirar naturalmente se não fosse revogado.</span></div><div class="req-body"></div></div>
+<div class="req req-rn"><div class="req-header"><span class="req-toggle">▼</span><span class="req-id">RN-17</span><span class="req-summary">: uma antecipação originada por gestora ou hospital convenente (RF-TER-01) segue exatamente as mesmas regras de uma solicitação self-service a partir do momento em que é criada — mesma máquina de status (RF-STATUS-01), mesmo requisito de segundo fator facial (RN-04), mesma elegibilidade de quem pode assinar (RF-REP-02: só <code>representante_legal</code>). A origem da operação (self-service, gestora ou hospital convenente) não cria uma trilha de aprovação separada.</span></div><div class="req-body"></div></div>
+<hr>
+<h2 class="sec-heading">4. Endpoints de Integração — Backend Fynvex</h2>
+<p>Todos os endpoints abaixo são <strong>novos</strong>, a serem criados no backend existente (<code>sistema-fynvex/antecipacao-develop</code>), sob o prefixo <code>/api/v1/app/</code>, para uso exclusivo do aplicativo móvel — distintos da API JWT administrativa já existente (<code>/api/login</code>, <code>/api/me</code> etc.). Convenção de dados: <code>snake_case</code>, valores monetários em <code>decimal</code> (BRL), datas em <code>YYYY-MM-DD</code>. Endpoints marcados <strong>🔒</strong> exigem <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+<p>Alguns campos (<code>kyc_status</code>, <code>pagamento_status</code>, <code>origem</code>) usam valores em inglês (<code>pending</code>, <code>approved</code>, <code>rejected</code>, <code>paid</code>, <code>self</code>) por convenção de contrato de API — são códigos internos trocados entre app e backend, nunca exibidos como texto na tela. Cada tela do app mostra uma frase fixa em português para cada valor (ex.: <code>kyc_status = pending</code> → "Cadastro em análise"); o usuário final nunca vê o literal em inglês.</p>
+<h3 class="sec-heading">4.1 Autenticação</h3>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/cpf</code></h4>
+<p>Verifica existência de representante ativo para o CPF informado.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "cpf": "123.456.789-00" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "empresa_id": 123,
+  "possui_cadastro": true,
+  "kyc_status": "approved"
+}</code></pre>
+<p><code>kyc_status</code>: <code>none</code> | <code>pending</code> | <code>approved</code> | <code>rejected</code> — status do cadastro da <strong>empresa</strong> vinculada ao representante desse CPF, não do CPF em si. <code>empresa_id</code> vem <code>null</code> quando <code>possui_cadastro</code> é <code>false</code>.</p>
+<p><strong>Response 429</strong> (rate limit — RNF-08)</p>
+<pre><code class="lang-json">{ "error_code": "TOO_MANY_ATTEMPTS", "message": "Muitas tentativas. Tente novamente em 12 minutos.", "retry_after": 720 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/login</code></h4>
+<p>Valida CPF + senha e, se corretos, emite o token de sessão diretamente — <strong>sem</strong> sessão de leitura facial nenhuma (RF-AUTH-01/03). A leitura facial não faz parte do login (RF-BIO-03).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "cpf": "123.456.789-00", "senha": "••••••••" }</code></pre>
+<p><code>senha</code> é enviada da mesma forma tanto num login digitado manualmente quanto num login com senha lembrada pelo dispositivo (RF-AUTH-04a) — o backend não distingue os dois casos, é o app que decide se mostra o campo ou reenvia o valor guardado no keychain/keystore ou no gerenciador de senhas do sistema.</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "access_token": "eyJ0eXAiOiJKV1Qi...",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "empresa": {
+    "id": 123,
+    "nome_fantasia": "Bem Estar Serviços Médicos",
+    "cnpj": "11.222.333/0001-99",
+    "kyc_status": "approved"
+  },
+  "representante": {
+    "id": 1,
+    "nome": "Ana Ferreira",
+    "perfil_acesso": "representante_legal"
+  }
+}</code></pre>
+<p><strong>Response 401</strong> (CPF ou senha incorretos)</p>
+<pre><code class="lang-json">{ "error_code": "SENHA_INVALIDA", "message": "CPF ou senha incorretos." }</code></pre>
+<p>Mensagem deliberadamente genérica (não diferencia "CPF não encontrado" de "senha errada") para não confirmar a existência de um cadastro a quem só tem o CPF.</p>
+<p><strong>Response 429</strong> (rate limit — RNF-08)</p>
+<pre><code class="lang-json">{ "error_code": "TOO_MANY_ATTEMPTS", "message": "Muitas tentativas. Tente novamente em 12 minutos.", "retry_after": 720 }</code></pre>
+<blockquote>A leitura facial só aparece mais adiante, no momento de assinar algo — ela usa um par próprio <strong>criar sessão → confirmar</strong>, repetido em cada um desses momentos: assinatura de antecipação e do Contrato-Mãe (seção 4.3), leitura facial do cadastro (seção 4.2), e a leitura facial de recuperação de conta (abaixo). Não existe mais um par de leitura facial "de login" — o login em si (<code>.../login</code>, acima) não usa esse padrão.</blockquote>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/logout</code> 🔒</h4>
+<p>Revoga o token de sessão atual <strong>e</strong> instrui o app a apagar a senha lembrada localmente (RF-AUTH-07) — diferente do 401 automático (RNF-18), que só limpa o token, preservando a senha lembrada para permitir reautenticação silenciosa (RF-AUTH-04a). <strong>Response 204</strong> (sem corpo).</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/recuperacao/iniciar</code></h4>
+<p>RF-AUTH-08. Sem 🔒 — é chamado por quem perdeu acesso, antes de qualquer sessão existir. Mesmo rate limit de RNF-08 (5 tentativas/15 min) para não abrir uma segunda porta de força bruta.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "cpf": "123.456.789-00", "email": "ana.ferreira@exemplo.com.br" }</code></pre>
+<p><strong>Response 200</strong> (sempre — não confirma nem nega que o e-mail exista, mesmo racional de <code>SENHA_INVALIDA</code> em <code>.../login</code>)</p>
+<pre><code class="lang-json">{ "mensagem": "Se o e-mail informado estiver correto, você receberá um código de verificação." }</code></pre>
+<p>Se o e-mail corresponde a um representante <code>ativo</code> com esse CPF, um código de verificação <strong>válido por 15 minutos</strong> é enviado a ele (2º fator equivalente ao facial — não um substituto mais fraco).</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/recuperacao/confirmar</code></h4>
+<p>Confirma o código recebido por e-mail e permite definir uma nova senha — a mesma pessoa já verificada (RF-KYC-02) restabelece acesso, sem repetir cadastro/revisão.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "cpf": "123.456.789-00", "email": "ana.ferreira@exemplo.com.br", "codigo": "482913", "nova_senha": "••••••••" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "representante_id": 1, "status": "senha_redefinida" }</code></pre>
+<p>Depois disso, o app segue para uma nova leitura facial — par dedicado abaixo, já que não existe mais um par de leitura facial de login pra reaproveitar. Substitui o template antigo pelo novo, já que o dispositivo/enrollment anterior pode não estar mais disponível.</p>
+<p><strong>Response 401</strong> (código incorreto ou expirado)</p>
+<pre><code class="lang-json">{ "error_code": "CODIGO_INVALIDO", "message": "Código incorreto ou expirado." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/recuperacao/leitura-facial/iniciar</code></h4>
+<p>Inicia a sessão de leitura facial que encerra a recuperação de conta (RF-AUTH-08/RF-BIO-03) — mesmo mecanismo de sessão dos demais pontos de leitura facial do app (RF-BIO-08).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "representante_id": 1 }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-...", "session_expires_in": 180 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/auth/recuperacao/leitura-facial/confirmar</code></h4>
+<p>Confirma o resultado da sessão e substitui o template biométrico do representante pelo novo, emitindo o token de sessão — a recuperação de conta termina aqui.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-..." }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "access_token": "eyJ0eXAiOiJKV1Qi...",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "empresa": { "id": 123, "nome_fantasia": "Bem Estar Serviços Médicos", "cnpj": "11.222.333/0001-99", "kyc_status": "approved" },
+  "representante": { "id": 1, "nome": "Ana Ferreira", "perfil_acesso": "representante_legal" }
+}</code></pre>
+<p><strong>Response 401</strong> (liveness reprovado)</p>
+<pre><code class="lang-json">{ "error_code": "FACIAL_MISMATCH", "message": "Não foi possível confirmar sua identidade." }</code></pre>
+<hr>
+<h3 class="sec-heading">4.2 Cadastro</h3>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro</code></h4>
+<p>Inicia o cadastro. <code>multipart/form-data</code>.</p>
+<p><strong>Request (campos do form)</strong></p>
+<table>
+<thead><tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th></tr></thead>
+<tbody><tr><td><code>cnpj</code></td><td>string</td><td>sim</td></tr><tr><td><code>email</code></td><td>string</td><td>sim (RF-CAD-01/RF-REP-07 — só uso é recuperação de conta)</td></tr><tr><td><code>contrato_social</code></td><td>file (pdf/jpg/png, ≤10MB)</td><td>sim</td></tr><tr><td><code>documento_identidade</code></td><td>file (pdf/jpg/png, ≤10MB)</td><td>sim (RF-CAD-01)</td></tr><tr><td><code>procuracao</code></td><td>file (pdf/jpg/png, ≤10MB)</td><td>não</td></tr><tr><td><code>parceiro_codigo</code></td><td>string</td><td>não (RF-CAD-11)</td></tr></tbody></table>
+<p><strong>Response 201</strong></p>
+<pre><code class="lang-json">{ "cadastro_id": 55, "status": "processando_ia" }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/cadastro/{cadastro_id}</code></h4>
+<p>Consulta status e, quando disponível, os dados extraídos pela IA.</p>
+<p><strong>Response 200</strong> (<code>status = dados_extraidos</code>)</p>
+<pre><code class="lang-json">{
+  "cadastro_id": 55,
+  "status": "dados_extraidos",
+  "dados_extraidos": {
+    "razao_social": "Bem Estar Serviços Médicos Ltda",
+    "nome_fantasia": "Bem Estar Serviços Médicos",
+    "endereco": "Av. Paulista, 1000 - Bela Vista, São Paulo/SP",
+    "responsavel_legal": {
+      "nome": "Ana Ferreira",
+      "cpf": "123.456.789-00",
+      "cargo": "Sócia-administradora"
+    }
+  }
+}</code></pre>
+<p><code>status</code>: <code>processando_ia</code> | <code>dados_extraidos</code> | <code>falha_extracao</code> | <code>dados_confirmados</code> | <code>biometria_cadastrada</code> | <code>dados_bancarios_salvos</code> | <code>pending</code> | <code>approved</code> | <code>rejected</code>.</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro/{cadastro_id}/confirmar-dados</code> 🔒</h4>
+<p>Confirma (ou corrige) os dados extraídos pela IA e define a senha do responsável legal — que se torna o primeiro representante da empresa (RF-REP-01), com perfil <code>representante_legal</code>.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{
+  "razao_social": "Bem Estar Serviços Médicos Ltda",
+  "nome_fantasia": "Bem Estar Serviços Médicos",
+  "endereco": "Av. Paulista, 1000 - Bela Vista, São Paulo/SP",
+  "responsavel_legal": {
+    "nome": "Ana Ferreira",
+    "cpf": "123.456.789-00",
+    "cargo": "Sócia-administradora"
+  },
+  "senha": "••••••••"
+}</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "cadastro_id": 55, "status": "dados_confirmados", "representante_id": 1 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro/{cadastro_id}/leitura-facial/iniciar</code></h4>
+<p>Inicia a sessão de leitura facial para cadastrar o template biométrico do responsável — mesmo mecanismo de sessão usado em qualquer outro ponto de leitura facial do app (RF-BIO-08), aqui usado para cadastrar em vez de verificar contra um template já existente.</p>
+<p><strong>Request</strong>: sem corpo (o <code>cadastro_id</code> já identifica a empresa).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-...", "session_expires_in": 180 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro/{cadastro_id}/leitura-facial/confirmar</code></h4>
+<p>Confirma o resultado da sessão e cadastra o template biométrico do responsável.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-..." }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "cadastro_id": 55, "status": "biometria_cadastrada" }</code></pre>
+<p><strong>Response 401</strong>: mesmo formato de <code>FACIAL_MISMATCH</code> da seção 4.1.</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro/{cadastro_id}/dados-bancarios</code></h4>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{
+  "banco_id": 1,
+  "agencia": "1234",
+  "conta": "56789-0",
+  "tipo_conta": "corrente",
+  "tipo_transferencia": "pix",
+  "pix": "11222333000199"
+}</code></pre>
+<p><code>tipo_conta</code>: <code>corrente</code> | <code>poupanca</code>. <code>tipo_transferencia</code>: <code>pix</code> | <code>ted</code> (quando <code>ted</code>, <code>pix</code> é omitido/ignorado).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "cadastro_id": 55, "status": "dados_bancarios_salvos" }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/cadastro/{cadastro_id}/aceite-termos</code></h4>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "termos_aceitos": true, "versao_termos": "1.0" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "cadastro_id": 55,
+  "status": "pending",
+  "kyc_status": "pending",
+  "access_token": "eyJ0eXAiOiJKV1Qi...",
+  "token_type": "bearer",
+  "expires_in": 604800
+}</code></pre>
+<p>O token é emitido já nesta resposta (RF-CAD-10) — o app autentica o usuário imediatamente com ele, em vez de exigir uma chamada de login separada só para chegar à tela de acompanhamento de análise.</p>
+<hr>
+<h3 class="sec-heading">4.3 Antecipação</h3>
+<h4 class="sec-heading"><code>GET /api/v1/app/contrato-mae</code> 🔒</h4>
+<p>Consulta se o Contrato-Mãe da empresa autenticada já foi assinado (RF-MAE-01).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "status": "assinado", "assinado_em": "2026-07-20T09:12:00Z" }</code></pre>
+<p>ou, se ainda não assinado:</p>
+<pre><code class="lang-json">{ "status": "nunca_assinado", "assinado_em": null }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/contrato-mae/assinar/iniciar</code> 🔒</h4>
+<p>Inicia a sessão de leitura facial para confirmar a assinatura do Contrato-Mãe — mesmo mecanismo de sessão usado em qualquer outro ponto de leitura facial do app (RF-BIO-03/08).</p>
+<p><strong>Request</strong>: sem corpo (a empresa é identificada pelo token de sessão).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-...", "session_expires_in": 180 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/contrato-mae/assinar/confirmar</code> 🔒</h4>
+<p>Confirma o resultado da sessão e registra a assinatura do Contrato-Mãe (RF-MAE-02) — mesmo mecanismo de <code>POST /antecipacoes/{id}/assinar/confirmar</code>.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-..." }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "status": "assinado",
+  "assinado_em": "2026-08-05T14:10:00Z",
+  "assinado_por": { "representante_id": 1, "nome": "Ana Ferreira" }
+}</code></pre>
+<p><strong>Response 401</strong>: mesmo formato de <code>FACIAL_MISMATCH</code> da seção 4.1.</p>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/antecipacoes</code> 🔒</h4>
+<p>Lista as solicitações da empresa autenticada, mais recentes primeiro.</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "data": [
+    {
+      "id": 1,
+      "nf_numero": "1000",
+      "tomador": "Convênio SulSaúde",
+      "valor_bruto": 4820.00,
+      "desagio_pct": 3.95,
+      "desagio": 190.39,
+      "taxa_administrativa": 15.00,
+      "valor_liquido": 4614.61,
+      "data_credito": "2026-08-06",
+      "status": "aguardando_liquidacao",
+      "pagamento_status": "pending",
+      "motivo_recusa": null,
+      "origem": "self",
+      "created_at": "2026-08-05T14:32:00Z"
+    }
+  ]
+}</code></pre>
+<p><code>status</code>: um dos nove valores de RF-STATUS-01 (<code>solicitada</code> | <code>em_analise</code> | <code>aprovada</code> | <code>recusada</code> | <code>credito_efetuado</code> | <code>aguardando_liquidacao</code> | <code>liquidada</code> | <code>em_atraso</code> | <code>cancelada</code>). <code>pagamento_status</code> só é relevante em <code>aguardando_liquidacao</code>/<code>em_atraso</code>/ <code>liquidada</code> (<code>pending</code> | <code>paid</code>). <code>origem</code>: <code>self</code> | <code>gestora</code> | <code>hospital_convenio</code> (RF-TER-01) — itens com <code>origem</code> diferente de <code>self</code> e <code>status: aguardando_assinatura</code> (normalmente invisível na lista, ver RF-ANT-08) <strong>aparecem</strong> aqui mesmo nesse status, com ação de "Aprovar" em vez de "Ver pagamento" (RF-TER-03) — é a diferença deliberada desse fluxo em relação à solicitação self-service, cujo rascunho não persiste em <code>aguardando_assinatura</code> visível ao usuário.</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/nota-fiscal</code> 🔒</h4>
+<p>Envia a Nota Fiscal para leitura por IA. <code>multipart/form-data</code>: campo <code>nota_fiscal</code> (file).</p>
+<p><strong>Response 201</strong></p>
+<pre><code class="lang-json">{ "nf_leitura_id": 77, "status": "processando_ia" }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/antecipacoes/nota-fiscal/{nf_leitura_id}</code> 🔒</h4>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "nf_leitura_id": 77,
+  "status": "dados_extraidos",
+  "numero": "1000",
+  "tomador": "Convênio SulSaúde",
+  "cnpj_tomador": "22333444000155",
+  "valor": 4820.00,
+  "data_emissao": "2026-07-31",
+  "data_vencimento": "2026-09-04"
+}</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/nota-fiscal/{nf_leitura_id}/confirmar-dados</code> 🔒</h4>
+<p>Confirma (ou corrige) os dados extraídos pela IA — mesmo padrão de <code>POST /cadastro/{cadastro_id}/confirmar-dados</code> (RF-ANT-04/RF-CAD-07). A simulação (abaixo) e a criação da solicitação usam os valores desta confirmação, não os originalmente extraídos.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{
+  "numero": "1000",
+  "tomador": "Convênio SulSaúde",
+  "cnpj_tomador": "22333444000155",
+  "valor": 4820.00,
+  "valor_solicitado": 4820.00,
+  "data_emissao": "2026-07-31",
+  "data_vencimento": "2026-09-04"
+}</code></pre>
+<p><code>valor</code> é o valor total da NF; <code>valor_solicitado</code> (RF-ANT-04) é quanto o usuário quer antecipar nesta solicitação — o app já pré-preenche esse campo com o saldo disponível calculado (RF-ANT-10), não com <code>valor</code> cru, mas o usuário pode editar para um valor ainda menor. O backend não valida o saldo aqui ainda — só na criação da solicitação (abaixo), que é o momento em que a checagem importa de fato. <strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "nf_leitura_id": 77, "status": "dados_confirmados" }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/simular</code> 🔒</h4>
+<p><code>desagio_pct</code> é calculado por RN-14 a partir do prazo real da NF (flat até 30 dias, pro rata die a partir do 31º) — nunca um valor fixo. O deságio incide sobre <code>valor_solicitado</code> (a confirmação acima), não sobre o valor total da NF quando os dois forem diferentes.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "nf_leitura_id": 77 }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "valor_bruto": 4820.00,
+  "desagio_pct": 3.95,
+  "desagio": 190.39,
+  "taxa_administrativa": 15.00,
+  "valor_liquido": 4614.61,
+  "data_credito_prevista": "2026-08-06"
+}</code></pre>
+<p><code>valor_bruto</code> aqui é o <code>valor_solicitado</code> confirmado, não necessariamente o valor total da NF (RF-ANT-10).</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes</code> 🔒</h4>
+<p>Cria a solicitação (antes da assinatura — ver RF-ANT-07/08). Não há mais prazo mínimo que bloqueie a criação (RN-14) — a única rejeição possível é saldo insuficiente na NF (RN-11).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "nf_leitura_id": 77 }</code></pre>
+<p><strong>Response 201</strong></p>
+<pre><code class="lang-json">{
+  "id": 1,
+  "status": "aguardando_assinatura",
+  "valor_bruto": 4820.00,
+  "desagio": 190.39,
+  "taxa_administrativa": 15.00,
+  "valor_liquido": 4614.61,
+  "data_credito": "2026-08-06"
+}</code></pre>
+<p><strong>Response 409</strong> (<code>valor_solicitado</code> supera o saldo disponível da NF — RN-11)</p>
+<pre><code class="lang-json">{
+  "error_code": "SALDO_NF_INSUFICIENTE",
+  "message": "Esta Nota Fiscal já tem R$ 5.000,00 antecipados. Saldo disponível: R$ 5.000,00.",
+  "valor_total_nf": 10000.00,
+  "valor_ja_antecipado": 5000.00,
+  "saldo_disponivel": 5000.00,
+  "antecipacao_id": 4
+}</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/{id}/assinar/iniciar</code> 🔒</h4>
+<p>Inicia a sessão de leitura facial para confirmar a assinatura desta solicitação — mesmo mecanismo de sessão usado em qualquer outro ponto de leitura facial do app (RF-BIO-03/08).</p>
+<p><strong>Request</strong>: sem corpo.</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-...", "session_expires_in": 180 }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/{id}/assinar/confirmar</code> 🔒</h4>
+<p>Confirma o resultado da sessão e efetiva a assinatura (RF-ANT-07/08).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "session_id": "a1b2c3d4-e5f6-..." }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "id": 1,
+  "status": "solicitada",
+  "assinado_em": "2026-08-05T14:40:00Z",
+  "assinado_por": { "representante_id": 1, "nome": "Ana Ferreira" }
+}</code></pre>
+<p><strong>Response 401</strong>: mesmo formato de <code>FACIAL_MISMATCH</code> da seção 4.1.</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/{id}/cancelar</code> 🔒</h4>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "id": 1, "status": "cancelada" }</code></pre>
+<p><strong>Response 409</strong> (status não permite cancelamento — RN-03)</p>
+<pre><code class="lang-json">{ "error_code": "CANCELAMENTO_NAO_PERMITIDO", "message": "Solicitação não pode mais ser cancelada." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/antecipacoes/{id}/recusar</code> 🔒</h4>
+<p>RF-TER-07. Só válido para <code>status: aguardando_assinatura</code> com <code>origem</code> diferente de <code>self</code> (uma antecipação de terceiro ainda não decidida) — <strong>não exige sessão de leitura facial</strong>, diferente de <code>.../assinar/*</code>. Definitivo: não existe endpoint para reverter uma recusa.</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "id": 1, "status": "cancelada" }</code></pre>
+<p><strong>Response 409</strong> (não é uma antecipação de terceiro pendente)</p>
+<pre><code class="lang-json">{ "error_code": "RECUSA_NAO_PERMITIDA", "message": "Esta solicitação não pode ser recusada." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/antecipacoes/{id}/pagamento</code> 🔒</h4>
+<p>Disponível quando <code>status</code> é <code>aguardando_liquidacao</code>, <code>em_atraso</code> ou <code>liquidada</code> (RF-PAG-01). O boleto refere-se à <strong>liquidação da operação pelo tomador</strong> (valor bruto da NF), não a uma cobrança à PJ (RF-ANT-11) — <code>pix_payload</code>/<code>linha_digitavel</code> só vêm preenchidos quando o vínculo de parceiro da empresa <strong>não</strong> é <code>confirmado</code> (RF-CAD-13); caso contrário a resposta traz apenas o status, e o app não deve exibir tela de QR/boleto.</p>
+<p><strong>Response 200</strong> (sem parceiro confirmado)</p>
+<pre><code class="lang-json">{
+  "antecipacao_id": 1,
+  "valor_bruto": 4820.00,
+  "tomador": "Convênio SulSaúde",
+  "data_vencimento": "2026-09-04",
+  "pagamento_status": "pending",
+  "pix_payload": "00020126580014BR.GOV.BCB.PIX...6304ABCD",
+  "linha_digitavel": "34191.79001 01043.510047 91020.150008 4 88970000001500"
+}</code></pre>
+<p><strong>Response 200</strong> (vínculo de parceiro <code>confirmado</code> — liquidação pela plataforma do parceiro)</p>
+<pre><code class="lang-json">{
+  "antecipacao_id": 1,
+  "valor_bruto": 4820.00,
+  "tomador": "Convênio SulSaúde",
+  "data_vencimento": "2026-09-04",
+  "pagamento_status": "pending",
+  "pix_payload": null,
+  "linha_digitavel": null
+}</code></pre>
+<p><strong>Response 409</strong> (status fora de <code>aguardando_liquidacao</code>/<code>em_atraso</code>/<code>liquidada</code>)</p>
+<pre><code class="lang-json">{ "error_code": "LIQUIDACAO_INDISPONIVEL", "message": "Esta solicitação não possui liquidação em andamento." }</code></pre>
+<blockquote>Não existe endpoint para o app "confirmar" a liquidação — a confirmação chega ao backend via webhook do provedor de boletos/split (RF-PAG-04) e é apenas refletida neste <code>GET</code> e via push (RF-PUSH-02).</blockquote>
+<hr>
+<h3 class="sec-heading">4.4 Perfil</h3>
+<h4 class="sec-heading"><code>GET /api/v1/app/perfil</code> 🔒</h4>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "empresa_id": 123,
+  "razao_social": "Bem Estar Serviços Médicos Ltda",
+  "nome_fantasia": "Bem Estar Serviços Médicos",
+  "cnpj": "11.222.333/0001-99",
+  "kyc_status": "approved",
+  "documentos": [
+    { "tipo": "contrato_social", "status": "enviado" },
+    { "tipo": "procuracao", "status": "nao_enviado" }
+  ],
+  "vinculo_parceiro": { "parceiro": "ABM/DC", "status": "confirmado" },
+  "representante_logado": {
+    "id": 1,
+    "nome": "Ana Ferreira",
+    "cargo": "Sócia-administradora",
+    "perfil_acesso": "representante_legal",
+    "documento_identidade_status": "enviado",
+    "leitura_facial_status": "cadastrado"
+  }
+}</code></pre>
+<p><code>vinculo_parceiro.status</code>: <code>nao_vinculado</code> | <code>pendente</code> | <code>confirmado</code> (RF-CAD-11/12/13). Quando a empresa nunca declarou vínculo, <code>parceiro</code> é <code>null</code> e <code>status</code> é <code>nao_vinculado</code>. Note que <code>documentos</code> só traz documentos <strong>da empresa</strong> (Contrato Social, Procuração) — documento de identidade e leitura facial são por representante <code>representante_legal</code> (RF-BIO-04) e por isso vivem em <code>representante_logado</code> (o de quem está autenticado) e em cada item de <code>GET /perfil/representantes</code> (os demais); um representante <code>visualizador</code> não tem nenhum dos dois.</p>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/perfil/representantes</code> 🔒</h4>
+<p>Lista todos os representantes da empresa — qualquer perfil de acesso pode chamar (RF-REP-02).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "representantes": [
+    { "id": 1, "nome": "Ana Ferreira", "cpf": "123.456.789-00", "cargo": "Sócia-administradora", "perfil_acesso": "representante_legal", "status": "ativo" },
+    { "id": 2, "nome": "Carlos Mendes", "cpf": "987.654.321-00", "cargo": "Gerente financeiro", "perfil_acesso": "visualizador", "status": "ativo" }
+  ]
+}</code></pre>
+<p><code>status</code>: <code>convidado</code> | <code>pendente_analise</code> | <code>ativo</code> | <code>rejeitado</code> | <code>inativo</code> (RF-REP-03). Um <code>visualizador</code> nunca passa por <code>pendente_analise</code> — vai direto de <code>convidado</code> para <code>ativo</code> ao definir a senha (não há revisão da equipe Fynvex nesse fluxo).</p>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/perfil/representantes</code> 🔒</h4>
+<p>Convida um novo representante. Só <code>representante_legal</code> (RF-REP-02). O corpo varia conforme o perfil convidado (RF-REP-03):</p>
+<p><strong>Request — convite de <code>representante_legal</code></strong> (precisa de Procuração, revisão de KYC)</p>
+<pre><code class="lang-json">{
+  "nome": "Beatriz Souza",
+  "cpf": "111.222.333-44",
+  "cargo": "Sócia",
+  "email": "beatriz.souza@exemplo.com.br",
+  "perfil_acesso": "representante_legal"
+}</code></pre>
+<p><strong>Response 201</strong></p>
+<pre><code class="lang-json">{ "representante_id": 3, "status": "convidado", "convite_id": "F9K2QX" }</code></pre>
+<p><code>convite_id</code> é o código que o representante_legal compartilha com o convidado por fora do app (ex. WhatsApp) — não há, hoje, um deep link automático (ver Fora de Escopo). O convidado usa esse código para acessar o próprio fluxo de ingresso: senha, leitura facial (RF-BIO-01), documento de identidade e upload de Procuração — mesmo padrão multipart de RF-CAD-03 — e só fica <code>ativo</code> após revisão da equipe Fynvex (RF-REP-03).</p>
+<p><strong>Request — convite de <code>visualizador</code></strong> (sem Procuração, sem revisão)</p>
+<pre><code class="lang-json">{ "nome": "Carlos Mendes", "cpf": "987.654.321-00", "email": "carlos.mendes@exemplo.com.br", "perfil_acesso": "visualizador" }</code></pre>
+<p><code>cpf</code> é obrigatório aqui mesmo sem revisão nenhuma depois — é o identificador de login (RF-AUTH-01) do convidado, coletado nesse momento porque não há mais nenhuma outra etapa que o peça. <strong>Response 201</strong></p>
+<pre><code class="lang-json">{ "representante_id": 2, "status": "convidado" }</code></pre>
+<p>Não há <code>convite_id</code> nesse caso — o backend envia direto um e-mail com um código de 6 dígitos (mesmo mecanismo de <code>POST /auth/recuperacao/iniciar</code>, seção 4.1); o convidado confirma esse código em <code>POST /convites/visualizador/confirmar</code> (abaixo) e já fica <code>ativo</code> nesse momento.</p>
+<p><strong>Response 403</strong> (quem chamou não é <code>representante_legal</code>)</p>
+<pre><code class="lang-json">{ "error_code": "ACAO_RESTRITA_A_REPRESENTANTE_LEGAL", "message": "Apenas representantes legais podem convidar representantes." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>POST /api/v1/app/convites/visualizador/confirmar</code></h4>
+<p>Confirma o código enviado por e-mail no convite de um <code>visualizador</code> e define a senha — sem sessão de leitura facial, já que esse perfil não passa por biometria (RF-REP-08).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "email": "carlos.mendes@exemplo.com.br", "codigo": "482913", "senha": "••••••••" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "representante_id": 2, "status": "ativo" }</code></pre>
+<p><strong>Response 401</strong> (código incorreto/expirado — mesmo limite de tentativas de RNF-08)</p>
+<pre><code class="lang-json">{ "error_code": "CODIGO_INVALIDO", "message": "Código incorreto ou expirado." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>PUT /api/v1/app/perfil/representantes/{id}</code> 🔒</h4>
+<p>Altera perfil de acesso ou status de um representante. Só <code>representante_legal</code>.</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "perfil_acesso": "representante_legal" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "id": 2, "status": "ativo", "perfil_acesso": "representante_legal" }</code></pre>
+<p><strong>Response 409</strong> (resultaria em zero representante_legal ativo — RN-15)</p>
+<pre><code class="lang-json">{ "error_code": "ULTIMO_REPRESENTANTE_LEGAL", "message": "A empresa precisa de ao menos um representante legal ativo." }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>DELETE /api/v1/app/perfil/representantes/{id}</code> 🔒</h4>
+<p>Remove/desativa um representante e revoga sua sessão ativa (RN-16). Só <code>representante_legal</code>; mesmo 409 <code>ULTIMO_REPRESENTANTE_LEGAL</code> de acima quando aplicável.</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "id": 2, "status": "inativo" }</code></pre>
+<hr>
+<h4 class="sec-heading"><code>GET /api/v1/app/perfil/dados-bancarios</code> 🔒</h4>
+<p>Só <code>representante_legal</code> (RF-REP-02) — um <code>visualizador</code> não tem acesso a esta rota (403), nem mascarado: dados bancários não fazem parte do que ele acompanha. <strong>Response 200</strong>: mesmo formato do request de <code>POST .../dados-bancarios</code> (seção 4.2), acrescido de <code>banco_nome</code>.</p>
+<h4 class="sec-heading"><code>PUT /api/v1/app/perfil/dados-bancarios</code> 🔒</h4>
+<p><strong>Request</strong>: idêntico ao <code>POST /api/v1/app/cadastro/{id}/dados-bancarios</code>. Só <code>representante_legal</code> (RF-REP-02). <strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "status": "atualizado" }</code></pre>
+<p><strong>Response 403</strong> (chamado por <code>visualizador</code>)</p>
+<pre><code class="lang-json">{ "error_code": "ACAO_RESTRITA_A_REPRESENTANTE_LEGAL", "message": "Apenas representantes legais podem acessar dados bancários." }</code></pre>
+<hr>
+<h3 class="sec-heading">4.5 Apoio</h3>
+<h4 class="sec-heading"><code>GET /api/v1/app/bancos</code></h4>
+<p>Lista de bancos para preencher o seletor de RF-BANK-01. Público (não exige token).</p>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{ "data": [ { "id": 1, "nome": "Banco do Brasil" }, { "id": 2, "nome": "Bradesco" } ] }</code></pre>
+<h4 class="sec-heading"><code>POST /api/v1/app/simulacao-publica</code></h4>
+<p>Simulador (RF-SIM-01/04). Público (não exige token) — usa o mesmo motor de cálculo de <code>POST /antecipacoes/simular</code> (RN-14), sem depender de uma leitura de NF real. Usuário autenticado chama o mesmo endpoint (RF-SIM-04): não há uma variante "logada" separada — o app é que decide pra onde levar o resultado (cadastro, se anônimo; revisão da NF, se autenticado).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "valor_bruto": 4820.00, "data_vencimento": "2026-09-04" }</code></pre>
+<p><strong>Response 200</strong></p>
+<pre><code class="lang-json">{
+  "valor_bruto": 4820.00,
+  "desagio_pct": 3.95,
+  "desagio": 190.39,
+  "taxa_administrativa": 15.00,
+  "valor_liquido": 4614.61,
+  "data_credito_prevista": "2026-08-11"
+}</code></pre>
+<h4 class="sec-heading"><code>POST /api/v1/app/dispositivos</code> 🔒</h4>
+<p>Registra o token de push do dispositivo (RF-PUSH-01).</p>
+<p><strong>Request</strong></p>
+<pre><code class="lang-json">{ "device_token": "f3a1...", "plataforma": "ios" }</code></pre>
+<p><code>plataforma</code>: <code>ios</code> | <code>android</code>. <strong>Response 204</strong>.</p>
+<hr>
+<h2 class="sec-heading">5. Integrações Externas</h2>
+<table>
+<thead><tr><th>Sistema</th><th>Finalidade</th><th>Sentido</th></tr></thead>
+<tbody><tr><td>Backend Fynvex existente (<code>antecipacao-develop</code>)</td><td>Persistência de empresa/sócio/antecipação/arquivo, motor de deságio e taxa administrativa</td><td>Bidirecional</td></tr><tr><td>Serviço de IA / OCR de documentos — já existe como código na aplicação web da Fynvex, exposto ao app via API do próprio backend (não é um fornecedor terceirizado a contratar)</td><td>Extração de dados do Contrato Social e da Nota Fiscal</td><td>Entrada</td></tr><tr><td>Provedor de biometria facial (liveness + correspondência + face match documental) — candidato: AWS Rekognition Face Liveness, a confirmar (RF-BIO-08)</td><td>Verificação de identidade (login), captura de assinatura (2º fator) e validação facial do documento de identidade no cadastro (RF-BIO-09)</td><td>Bidirecional</td></tr><tr><td>Provedor de boletos/split — Payproxy, solução já usada internamente pela Fynvex (não é um fornecedor novo a contratar)</td><td>Emissão do boleto de liquidação (RF-PAG), geração de QR Code Pix e código de barras, split automático (Fynvex + cashback do parceiro, RN-13), webhook de confirmação</td><td>Bidirecional</td></tr><tr><td>Autentique</td><td>Assinatura eletrônica formal do Termo de Cessão e do Contrato-Mãe — orquestrada inteiramente pelo backend (RN-10), sem etapa adicional visível ao usuário no app</td><td>Saída</td></tr><tr><td>Firebase Cloud Messaging / Apple Push Notification service</td><td>Notificações push ao dispositivo do usuário, inclusive as que levam à aprovação de antecipação originada por terceiro (RF-TER-02)</td><td>Saída</td></tr><tr><td>WhatsApp Business API</td><td>Espelhamento das notificações de status (RF-PUSH-04) e canal de suporte N2 (RF-SUP-01)</td><td>Saída</td></tr><tr><td>Plataforma do Departamento de Convênios (DC/ABM), demais parceiros/gestoras e hospitais convenentes</td><td>Base de PJs para validação de vínculo (RF-CAD-12), origem de deep links de nova solicitação (RF-CAD-14), origem de antecipações já preenchidas para aprovação (RF-TER-01), dashboard e prestação de contas do parceiro — inteiramente no backoffice, sem tela própria no app</td><td>Bidirecional</td></tr><tr><td>Registradora de recebíveis</td><td>Registro da cessão para prevenção de dupla cessão, quando aplicável ao ativo (RN-11)</td><td>Saída</td></tr><tr><td>Servidor SMTP próprio da Fynvex</td><td>Código de verificação da recuperação de conta (RF-AUTH-08) e comunicação de resultado do cadastro por e-mail (RF-KYC-03/04) — infraestrutura já existente da empresa, não um provedor terceirizado novo a contratar</td><td>Saída</td></tr></tbody></table>
+<hr>
+<h2 class="sec-heading">Apêndice — Fora de Escopo</h2>
+<p>Os itens abaixo foram deliberadamente deixados fora deste documento:</p>
+<ul><li><strong>Interface interna de análise/aprovação</strong> usada pela equipe Fynvex (RF-KYC-02) — assume-se backoffice já existente ou a ser especificado separadamente; este documento define apenas o contrato de API (status e transições) que ela deve respeitar.</li><li><strong>Cadastro de pessoa física</strong> (médico autônomo) — fora do escopo atual do app (ver Contexto).</li><li><strong>Cobrança de taxa administrativa à PJ por boleto/QR</strong> — a taxa administrativa é sempre descontada do valor líquido, nunca cobrada separadamente (RF-PAG, seção 1.10). O boleto de QR/código de barras que o app eventualmente exibe é o de <strong>liquidação da NF</strong> (RF-ANT-11) — sem vínculo de parceiro confirmado, é a própria PJ quem paga esse boleto, mas ele nunca inclui a taxa administrativa como um valor adicional; é sempre o resgate do valor bruto da NF.</li><li><strong>Cadastro, validação e comissionamento de parceiros/gestoras (backoffice do DC/ABM e demais parceiros)</strong> — o app só reflete o resultado (RF-CAD-12/13); a administração de parceiros, o split de pagamento e a prestação de contas são inteiramente do backoffice.</li><li><strong>Esquema de deep link e tratamento de app links</strong> vindos da plataforma do parceiro (RF-CAD-14) — mencionados como requisito funcional, mas o formato de URL/parâmetros é detalhe de implementação, não normatizado aqui.</li><li><strong>Sistema que cria uma antecipação originada por gestora ou hospital convenente</strong> (RF-TER-01) — é um sistema/portal do terceiro, externo a este app; aqui só se especifica o que o app faz a partir do momento em que a operação já existe (revisão + aprovação).</li><li><strong>Cadastro/credenciamento de hospitais convenentes e gestoras como origem de antecipação</strong> (RF-TER-01) — mesmo critério já aplicado a parceiros/gestoras acima: administração inteiramente backoffice.</li><li><strong>Entrega do convite de novo <code>representante_legal</code> por deep link automático</strong> (RF-REP-03) — por ora usa um código digitado manualmente, compartilhado pelo representante_legal fora do app (ex. WhatsApp); não há infraestrutura de deep link real ainda (mesma lacuna do item de RF-CAD-14 acima), e não é pré-requisito para o convite funcionar. O convite de <code>visualizador</code> não tem essa lacuna — já vai por e-mail automaticamente (RF-REP-03).</li></ul>
+
+</div>
+
+<script>
+// Seções colapsáveis
+function initSections() {
+  const process = (tag) => {
+    document.querySelectorAll(tag + '.sec-heading').forEach(h => {
+      const body = document.createElement('div');
+      body.className = 'sec-body';
+      let sib = h.nextSibling;
+      while (sib) {
+        const next = sib.nextSibling;
+        const el = sib.nodeType === 1 ? sib : null;
+        if (el && el.matches('h2,h3,h4')) break;
+        // stop at same or higher heading
+        const tagNum = parseInt(tag[1]);
+        if (el && el.tagName && el.tagName[0]==='H' && parseInt(el.tagName[1]) <= tagNum) break;
+        body.appendChild(sib);
+        sib = next;
+      }
+      h.after(body);
+      h.addEventListener('click', () => {
+        h.classList.toggle('collapsed');
+        body.classList.toggle('collapsed');
+      });
+    });
+  };
+  process('h4'); process('h3'); process('h2');
+}
+
+// Cards de requisitos
+function initReqs() {
+  document.querySelectorAll('.req-header:not(.req-header--simple)').forEach(hdr => {
+    hdr.addEventListener('click', () => {
+      const body = hdr.nextElementSibling;
+      if (!body || !body.classList.contains('req-body')) return;
+      const open = !body.classList.contains('collapsed');
+      body.style.maxHeight = open ? '0' : body.scrollHeight + 'px';
+      hdr.querySelector('.req-toggle').textContent = open ? '▶' : '▼';
+      body.classList.toggle('collapsed', open);
+    });
+    // init max-height
+    const body = hdr.nextElementSibling;
+    if (body && body.classList.contains('req-body')) {
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+}
+
+function expandAll(type) {
+  if (type === 'sec') {
+    document.querySelectorAll('.sec-heading').forEach(h => h.classList.remove('collapsed'));
+    document.querySelectorAll('.sec-body').forEach(b => b.classList.remove('collapsed'));
+  } else {
+    document.querySelectorAll('.req-body').forEach(b => {
+      b.classList.remove('collapsed');
+      b.style.maxHeight = b.scrollHeight + 'px';
+      const hdr = b.previousElementSibling;
+      if (hdr) { const t = hdr.querySelector('.req-toggle'); if(t) t.textContent='▼'; }
+    });
+  }
+}
+function collapseAll(type) {
+  if (type === 'sec') {
+    document.querySelectorAll('.sec-heading').forEach(h => h.classList.add('collapsed'));
+    document.querySelectorAll('.sec-body').forEach(b => b.classList.add('collapsed'));
+  } else {
+    document.querySelectorAll('.req-body').forEach(b => {
+      b.style.maxHeight = '0';
+      b.classList.add('collapsed');
+      const hdr = b.previousElementSibling;
+      if (hdr) { const t = hdr.querySelector('.req-toggle'); if(t) t.textContent='▶'; }
+    });
+  }
+}
+function filterReq(type) {
+  document.querySelectorAll('.req').forEach(r => {
+    if (type === 'all') { r.style.display=''; return; }
+    const isRnf = r.classList.contains('req-rnf');
+    const isRn  = r.classList.contains('req-rn');
+    const isRf  = !isRnf && !isRn;
+    r.style.display = (
+      (type==='rf' && isRf) ||
+      (type==='rnf' && isRnf) ||
+      (type==='rn' && isRn)
+    ) ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => { initSections(); initReqs(); });
+</script>
+</body>
+</html>

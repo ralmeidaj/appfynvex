@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RNF-16 — certificate pinning, escopado só ao host de produção. Não afeta
+  o host mock/dev (10.0.2.2) nem qualquer outro domínio: fora deste
+  domain-config, o app segue a config padrão (base-config do build type,
+  ver AndroidManifest/build.gradle para usesCleartextTraffic).
+
+  TODO(RNF-16): os dois pins abaixo são placeholder. Substituir pelos
+  hashes SHA-256 reais do certificado/chave pública de api.fynvex.com.br
+  assim que a Fase 0 do cronograma (infra) validar o certificado de
+  produção — ver Cronograma-Fynvex.md, seção "Preparação e Terceiros".
+  Manter 2 pins (primário + backup) para permitir rotação de certificado
+  sem lockout do app já publicado.
+-->
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">api.fynvex.com.br</domain>
+        <pin-set expiration="2027-12-31">
+            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

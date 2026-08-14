@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Override só da variante debug (Gradle mescla src/debug/res por cima de
+  src/main/res para o mesmo caminho de arquivo). Sem isto, a mera presença
+  de um network-security-config.xml sem <base-config> explícito faz o
+  Android bloquear TODO tráfego cleartext por padrão — inclusive o Metro
+  local (10.0.2.2, HTTP puro) — sobrepondo o usesCleartextTraffic="true"
+  do build debug (RNF-16 quebrando o dev loop, achado nesta sessão).
+  Build de release usa src/main/res/xml/network_security_config.xml
+  (sem este base-config permissivo, com o pinning de RNF-16).
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
