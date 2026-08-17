@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -23,6 +31,16 @@ const CONTRATO_MAE_TEXT = `CONTRATO-MÃE — ADESÃO AO PROGRAMA DE ANTECIPAÇÃ
 export function AdvanceMaeContractScreen() {
   const navigation = useNavigation<Nav>();
   const [accepted, setAccepted] = useState(false);
+  const [scrolledToEnd, setScrolledToEnd] = useState(false);
+
+  // RF-ANT-07a: o checkbox só fica interativo depois que o usuário rolar o
+  // termo até o fim — não basta abrir a tela.
+  function handleTermsScroll({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) {
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 24) {
+      setScrolledToEnd(true);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -35,16 +53,25 @@ export function AdvanceMaeContractScreen() {
           Antes da sua primeira solicitação, é preciso aceitar o acordo-quadro do programa de
           antecipação da Fynvex. Isso é feito uma única vez.
         </Text>
-        <View style={styles.textBox}>
+        <ScrollView
+          style={styles.textBox}
+          onScroll={handleTermsScroll}
+          scrollEventThrottle={100}
+          nestedScrollEnabled>
           <Text style={styles.termsText}>{CONTRATO_MAE_TEXT}</Text>
-        </View>
+        </ScrollView>
 
-        <TouchableOpacity style={styles.checkboxRow} onPress={() => setAccepted(!accepted)} activeOpacity={0.8}>
-          <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
+        <TouchableOpacity
+          style={styles.checkboxRow}
+          onPress={() => scrolledToEnd && setAccepted(!accepted)}
+          disabled={!scrolledToEnd}
+          activeOpacity={0.8}>
+          <View style={[styles.checkbox, accepted && styles.checkboxChecked, !scrolledToEnd && styles.checkboxDisabled]}>
             {accepted && <Text style={styles.checkboxMark}>✓</Text>}
           </View>
           <Text style={styles.checkboxLabel}>Li e aceito o Contrato-Mãe do programa de antecipação.</Text>
         </TouchableOpacity>
+        {!scrolledToEnd && <Text style={styles.scrollHint}>Role o texto acima até o final para habilitar o aceite.</Text>}
 
         <TouchableOpacity
           style={[styles.btn, !accepted && styles.btnDisabled]}
@@ -79,8 +106,10 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   checkboxChecked: {backgroundColor: '#124B9A', borderColor: '#124B9A'},
+  checkboxDisabled: {backgroundColor: '#f3f4f6'},
   checkboxMark: {color: '#ffffff', fontSize: 14, fontWeight: '800'},
   checkboxLabel: {flex: 1, fontSize: 13, color: '#374151', lineHeight: 19},
+  scrollHint: {fontSize: 12, color: '#9ca3af', marginTop: 6, marginLeft: 32},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

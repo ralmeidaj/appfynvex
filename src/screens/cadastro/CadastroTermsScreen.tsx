@@ -1,5 +1,14 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -30,8 +39,18 @@ const TERMS_TEXT = `TERMOS DE USO E POLÍTICA DE PRIVACIDADE — FYNVEX (texto i
 export function CadastroTermsScreen() {
   const navigation = useNavigation<Nav>();
   const [accepted, setAccepted] = useState(false);
+  const [scrolledToEnd, setScrolledToEnd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // RF-ANT-07a: o checkbox só fica interativo depois que o usuário rolar o
+  // termo até o fim — não basta abrir a tela.
+  function handleTermsScroll({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) {
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 24) {
+      setScrolledToEnd(true);
+    }
+  }
 
   const cadastroId = useCadastroStore(s => s.cadastroId);
   const cnpj = useCadastroStore(s => s.cnpj);
@@ -84,16 +103,25 @@ export function CadastroTermsScreen() {
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Termos de uso</Text>
-        <View style={styles.termsBox}>
+        <ScrollView
+          style={styles.termsBox}
+          onScroll={handleTermsScroll}
+          scrollEventThrottle={100}
+          nestedScrollEnabled>
           <Text style={styles.termsText}>{TERMS_TEXT}</Text>
-        </View>
+        </ScrollView>
 
-        <TouchableOpacity style={styles.checkboxRow} onPress={() => setAccepted(!accepted)} activeOpacity={0.8}>
-          <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
+        <TouchableOpacity
+          style={styles.checkboxRow}
+          onPress={() => scrolledToEnd && setAccepted(!accepted)}
+          disabled={!scrolledToEnd}
+          activeOpacity={0.8}>
+          <View style={[styles.checkbox, accepted && styles.checkboxChecked, !scrolledToEnd && styles.checkboxDisabled]}>
             {accepted && <Text style={styles.checkboxMark}>✓</Text>}
           </View>
           <Text style={styles.checkboxLabel}>Li e aceito os Termos de Uso e a Política de Privacidade da Fynvex.</Text>
         </TouchableOpacity>
+        {!scrolledToEnd && <Text style={styles.scrollHint}>Role o texto acima até o final para habilitar o aceite.</Text>}
 
         {error && (
           <View style={styles.errorBox}>
@@ -133,8 +161,10 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   checkboxChecked: {backgroundColor: '#124B9A', borderColor: '#124B9A'},
+  checkboxDisabled: {backgroundColor: '#f3f4f6'},
   checkboxMark: {color: '#ffffff', fontSize: 14, fontWeight: '800'},
   checkboxLabel: {flex: 1, fontSize: 13, color: '#374151', lineHeight: 19},
+  scrollHint: {fontSize: 12, color: '#9ca3af', marginTop: 6, marginLeft: 32},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
   errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},

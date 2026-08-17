@@ -1,5 +1,16 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Modal, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  Modal,
+  Alert,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -46,11 +57,22 @@ export function AdvanceTerceiroReviewScreen() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [scrolledToEnd, setScrolledToEnd] = useState(false);
   const [recusando, setRecusando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // RF-ANT-07a: o checkbox só fica interativo depois que o usuário rolar o
+  // termo até o fim — não basta abrir o modal.
+  function handleTermsScroll({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) {
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 24) {
+      setScrolledToEnd(true);
+    }
+  }
+
   function handleOpenModal() {
     setAccepted(false);
+    setScrolledToEnd(false);
     setError(null);
     setModalOpen(true);
   }
@@ -146,15 +168,22 @@ export function AdvanceTerceiroReviewScreen() {
         <View style={styles.modalBackdrop}>
           <View style={styles.sheet}>
             <Text style={styles.sheetTitle}>Termo de cessão de recebíveis</Text>
-            <ScrollView style={styles.sheetBody}>
+            <ScrollView style={styles.sheetBody} onScroll={handleTermsScroll} scrollEventThrottle={100}>
               <Text style={styles.termsText}>{CONTRACT_TEXT}</Text>
             </ScrollView>
-            <TouchableOpacity style={styles.checkboxRow} onPress={() => setAccepted(!accepted)} activeOpacity={0.8}>
-              <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => scrolledToEnd && setAccepted(!accepted)}
+              disabled={!scrolledToEnd}
+              activeOpacity={0.8}>
+              <View style={[styles.checkbox, accepted && styles.checkboxChecked, !scrolledToEnd && styles.checkboxDisabled]}>
                 {accepted && <Text style={styles.checkboxMark}>✓</Text>}
               </View>
               <Text style={styles.checkboxLabel}>Li e aceito os termos desta cessão de recebíveis.</Text>
             </TouchableOpacity>
+            {!scrolledToEnd && (
+              <Text style={styles.scrollHint}>Role o texto acima até o final para habilitar o aceite.</Text>
+            )}
             <TouchableOpacity
               style={[styles.btn, !accepted && styles.btnDisabled]}
               onPress={handleConfirmSignature}
@@ -208,7 +237,9 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   checkboxChecked: {backgroundColor: '#124B9A', borderColor: '#124B9A'},
+  checkboxDisabled: {backgroundColor: '#f3f4f6'},
   checkboxMark: {color: '#ffffff', fontSize: 14, fontWeight: '800'},
   checkboxLabel: {flex: 1, fontSize: 13, color: '#374151', lineHeight: 19},
+  scrollHint: {fontSize: 12, color: '#9ca3af', marginTop: 6, marginLeft: 32},
   cancelText: {color: '#6b7280', fontSize: 14, textAlign: 'center', marginTop: 14},
 });
