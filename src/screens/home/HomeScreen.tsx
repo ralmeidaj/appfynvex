@@ -169,6 +169,10 @@ export function HomeScreen() {
           {checkingMae ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.newBtnText}>+ Nova solicitação</Text>}
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => navigation.navigate('Simulador')}>
+          <Text style={styles.simularLink}>Simular uma nova antecipação</Text>
+        </TouchableOpacity>
+
         <Text style={styles.listLabel}>Minhas antecipações</Text>
 
         {loading ? (
@@ -199,6 +203,7 @@ const styles = StyleSheet.create({
   body: {flex: 1, paddingHorizontal: 20, paddingTop: 16},
   newBtn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 15, alignItems: 'center', marginBottom: 16},
   newBtnText: {color: '#ffffff', fontSize: 15, fontWeight: '700'},
+  simularLink: {color: '#124B9A', fontSize: 14, fontWeight: '600', textAlign: 'center', marginBottom: 20},
   listLabel: {fontSize: 12, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10},
   loadingSpinner: {marginTop: 40},
   listContent: {paddingBottom: 24},

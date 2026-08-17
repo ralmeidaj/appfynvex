@@ -14,6 +14,7 @@ import {AdvanceTerceiroReviewScreen} from '../screens/antecipacao/AdvanceTerceir
 import {AdvanceFacialConfirmScreen} from '../screens/antecipacao/AdvanceFacialConfirmScreen';
 import {AdvanceSuccessScreen} from '../screens/antecipacao/AdvanceSuccessScreen';
 import {AdvancePaymentScreen} from '../screens/antecipacao/AdvancePaymentScreen';
+import {SimuladorAutenticadoScreen} from '../screens/simulador/SimuladorAutenticadoScreen';
 import type {AntecipacaoListItem} from '../api/antecipacoes';
 import {PerfilHomeScreen} from '../screens/perfil/PerfilHomeScreen';
 import {PerfilDadosBancariosScreen} from '../screens/perfil/PerfilDadosBancariosScreen';
@@ -39,6 +40,7 @@ export type InicioStackParamList = {
   AdvanceFacialConfirm: undefined;
   AdvanceSuccess: undefined;
   AdvancePayment: {antecipacaoId: number; nfNumero: string};
+  Simulador: undefined;
 };
 
 // Sub-stack da aba "Perfil" (RF-PERF-01, RF-REP-02/03/04/05/06).
@@ -76,6 +78,7 @@ function InicioNavigator() {
       <InicioStack.Screen name="AdvanceFacialConfirm" component={AdvanceFacialConfirmScreen} />
       <InicioStack.Screen name="AdvanceSuccess" component={AdvanceSuccessScreen} />
       <InicioStack.Screen name="AdvancePayment" component={AdvancePaymentScreen} />
+      <InicioStack.Screen name="Simulador" component={SimuladorAutenticadoScreen} />
     </InicioStack.Navigator>
   );
 }
