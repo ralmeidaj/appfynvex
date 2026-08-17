@@ -36,6 +36,7 @@ import {
 } from './antecipacoes.mock';
 import {
   mockGetPerfil,
+  mockListarBancos,
   mockGetDadosBancarios,
   mockAtualizarDadosBancarios,
   mockListarRepresentantes,
@@ -108,7 +109,8 @@ const ROUTES: Record<string, MockHandler> = {
       pix: body.pix,
     });
   },
-  'POST /cadastro/:id/aceite-termos': (_config, params) => mockAceiteTermos(Number(params.id)),
+  'POST /cadastro/:id/aceite-termos': (config, params) =>
+    mockAceiteTermos(Number(params.id), parseBody(config).versao_termos),
 
   'GET /contrato-mae': config => mockGetContratoMae(config),
   'POST /contrato-mae/assinar/iniciar': config => mockIniciarAssinaturaContratoMae(config),
@@ -141,6 +143,7 @@ const ROUTES: Record<string, MockHandler> = {
   'GET /antecipacoes/:id/pagamento': (_config, params) => mockObterPagamento(Number(params.id)),
 
   'GET /perfil': config => mockGetPerfil(config),
+  'GET /bancos': () => mockListarBancos(),
   'GET /perfil/dados-bancarios': config => mockGetDadosBancarios(config),
   'PUT /perfil/dados-bancarios': config => {
     const body = parseBody(config);

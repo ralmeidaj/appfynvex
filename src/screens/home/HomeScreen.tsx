@@ -102,7 +102,8 @@ export function HomeScreen() {
     const canCancel = item.status === 'solicitada' || item.status === 'em_analise';
     // RF-TER-05: só representante_legal pode aprovar/recusar uma antecipação
     // originada por terceiro — visualizador só vê o badge, sem ação nenhuma.
-    const canApproveTerceiro = item.status === 'aguardando_assinatura' && auth?.perfilAcesso === 'representante_legal';
+    const canApproveTerceiro =
+      item.status === 'aguardando_assinatura' && item.origem !== 'self' && auth?.perfilAcesso === 'representante_legal';
     const cardTappable = canOpenLiquidacao || canApproveTerceiro;
 
     function handlePressCard() {

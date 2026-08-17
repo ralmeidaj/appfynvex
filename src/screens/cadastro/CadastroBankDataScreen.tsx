@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,22 +15,11 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import type {RootStackParamList} from '../../navigation/RootNavigator';
 import {salvarDadosBancarios} from '../../api/cadastro';
+import {listarBancos, type BancoOption} from '../../api/perfil';
 import {useCadastroStore} from '../../store/cadastroStore';
 import type {BankDataDraft} from '../../store/cadastroStore';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
-
-const BANKS = [
-  'Banco do Brasil',
-  'Bradesco',
-  'Itaú Unibanco',
-  'Santander',
-  'Caixa Econômica Federal',
-  'Nubank',
-  'Inter',
-  'C6 Bank',
-  'Sicoob',
-];
 
 function Chip({label, selected, onPress}: {label: string; selected: boolean; onPress: () => void}) {
   return (
@@ -48,7 +37,8 @@ export function CadastroBankDataScreen() {
   const cadastroId = useCadastroStore(s => s.cadastroId);
   const setBankDataStore = useCadastroStore(s => s.setBankData);
 
-  const [bank, setBank] = useState('');
+  const [bancos, setBancos] = useState<BancoOption[]>([]);
+  const [bancoId, setBancoId] = useState<number | null>(null);
   const [bankPickerOpen, setBankPickerOpen] = useState(false);
   const [agency, setAgency] = useState('');
   const [account, setAccount] = useState('');
@@ -58,17 +48,23 @@ export function CadastroBankDataScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const valid = Boolean(bank && agency.trim() && account.trim() && (transferType !== 'pix' || pix.trim()));
+  useEffect(() => {
+    listarBancos()
+      .then(res => setBancos(res.data.data))
+      .catch(() => {});
+  }, []);
+
+  const bancoNome = bancos.find(b => b.id === bancoId)?.nome ?? '';
+  const valid = Boolean(bancoId && agency.trim() && account.trim() && (transferType !== 'pix' || pix.trim()));
 
   async function handleSubmit() {
-    if (!valid || !cadastroId) {
+    if (!valid || !cadastroId || !bancoId) {
       setError('Preencha os dados bancários (e o Pix, se essa for a forma de recebimento) para continuar.');
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const bancoId = BANKS.indexOf(bank) + 1;
       await salvarDadosBancarios(cadastroId, {
         bancoId,
         agencia: agency.trim(),
@@ -77,7 +73,14 @@ export function CadastroBankDataScreen() {
         tipoTransferencia: transferType,
         pix: pix.trim(),
       });
-      setBankDataStore({bank, agency: agency.trim(), account: account.trim(), accountType, transferType, pix: pix.trim()});
+      setBankDataStore({
+        bank: bancoNome,
+        agency: agency.trim(),
+        account: account.trim(),
+        accountType,
+        transferType,
+        pix: pix.trim(),
+      });
       navigation.navigate('CadastroTerms');
     } catch {
       setError('Não foi possível salvar os dados bancários. Tente novamente.');
@@ -97,7 +100,7 @@ export function CadastroBankDataScreen() {
 
         <Text style={styles.label}>Banco</Text>
         <TouchableOpacity style={styles.select} onPress={() => setBankPickerOpen(true)} activeOpacity={0.8}>
-          <Text style={bank ? styles.selectValue : styles.selectPlaceholder}>{bank || 'Selecione o banco'}</Text>
+          <Text style={bancoNome ? styles.selectValue : styles.selectPlaceholder}>{bancoNome || 'Selecione o banco'}</Text>
         </TouchableOpacity>
 
         <View style={styles.row}>
@@ -154,16 +157,16 @@ export function CadastroBankDataScreen() {
           <View style={styles.modalSheet}>
             <Text style={styles.modalTitle}>Selecione o banco</Text>
             <FlatList
-              data={BANKS}
-              keyExtractor={item => item}
+              data={bancos}
+              keyExtractor={item => String(item.id)}
               renderItem={({item}) => (
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => {
-                    setBank(item);
+                    setBancoId(item.id);
                     setBankPickerOpen(false);
                   }}>
-                  <Text style={styles.modalItemText}>{item}</Text>
+                  <Text style={styles.modalItemText}>{item.nome}</Text>
                 </TouchableOpacity>
               )}
             />

@@ -11,6 +11,10 @@ import {saveSenhaToKeychain} from '../../hooks/useAuth';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
+// RF-TERM-02: versão do texto abaixo — subir este número junto de qualquer
+// mudança de conteúdo dos termos.
+const TERMOS_VERSAO = '1.0';
+
 const TERMS_TEXT = `TERMOS DE USO E POLÍTICA DE PRIVACIDADE — FYNVEX (texto ilustrativo)
 
 1. Objeto. Estes termos regulam o uso da plataforma Fynvex por profissionais de saúde (pessoa jurídica), representados por seu responsável legal, para consulta e antecipação de recebíveis, bem como para pagamento de valores devidos à Fynvex.
@@ -45,7 +49,7 @@ export function CadastroTermsScreen() {
     setLoading(true);
     setError(null);
     try {
-      const res = await aceitarTermos(cadastroId);
+      const res = await aceitarTermos(cadastroId, TERMOS_VERSAO);
       const cpf = dados?.responsavelCpf ?? '';
       await setAuth({
         sessionToken: res.data.access_token,

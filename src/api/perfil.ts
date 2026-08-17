@@ -13,6 +13,15 @@ export interface DadosBancariosResponse {
 
 export const getDadosBancarios = () => apiClient.get<DadosBancariosResponse>('/perfil/dados-bancarios');
 
+export interface BancoOption {
+  id: number;
+  nome: string;
+}
+
+// §4.5 — lista de bancos pra preencher o seletor de RF-BANK-01. Público
+// (não exige token), usada tanto no cadastro quanto na edição de perfil.
+export const listarBancos = () => apiClient.get<{data: BancoOption[]}>('/bancos');
+
 export interface AtualizarDadosBancariosPayload {
   bancoId: number;
   agencia: string;

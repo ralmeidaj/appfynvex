@@ -8,6 +8,7 @@ import {
   setVinculoParceiroFromCodigo,
   criarRepresentante,
   findRepresentantesByEmpresa,
+  registrarAceiteTermos,
   AI_EXTRACTION_MOCK,
   type BankDataFixture,
 } from './fixtures';
@@ -130,12 +131,13 @@ export async function mockDadosBancarios(cadastroId: number, bankData: BankDataF
   return {status: 200, data: {cadastro_id: cadastroId, status: 'dados_bancarios_salvos'}};
 }
 
-export async function mockAceiteTermos(cadastroId: number) {
+export async function mockAceiteTermos(cadastroId: number, versaoTermos: string) {
   const empresa = findEmpresaById(cadastroId);
   const [representante] = findRepresentantesByEmpresa(cadastroId);
   if (!empresa || !representante) {
     throw mockError(404, 'CADASTRO_NAO_ENCONTRADO', 'Cadastro não encontrado.');
   }
+  registrarAceiteTermos(cadastroId, versaoTermos);
   // RF-CAD-10/RF-KYC-05: concluir o cadastro leva direto à tela de análise,
   // sem exigir um login separado — por isso emite sessão aqui também, igual
   // ao passo de confirmação da leitura facial no login.

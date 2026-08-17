@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type {AntecipacaoStatus, PagamentoStatus} from '../types';
+import type {AntecipacaoOrigem, AntecipacaoStatus, PagamentoStatus} from '../types';
 
 export interface ContratoMaeResponse {
   status: 'assinado' | 'nunca_assinado';
@@ -24,6 +24,7 @@ export interface AntecipacaoListItem {
   status: AntecipacaoStatus;
   pagamento_status: PagamentoStatus | null;
   motivo_recusa: string | null;
+  origem: AntecipacaoOrigem;
   created_at: string;
 }
 

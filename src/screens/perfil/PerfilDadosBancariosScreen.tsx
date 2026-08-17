@@ -14,21 +14,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import type {PerfilStackParamList} from '../../navigation/EmpresaNavigator';
-import {getDadosBancarios, atualizarDadosBancarios} from '../../api/perfil';
+import {getDadosBancarios, atualizarDadosBancarios, listarBancos, type BancoOption} from '../../api/perfil';
 
 type Nav = NativeStackNavigationProp<PerfilStackParamList>;
-
-const BANKS = [
-  'Banco do Brasil',
-  'Bradesco',
-  'Itaú Unibanco',
-  'Santander',
-  'Caixa Econômica Federal',
-  'Nubank',
-  'Inter',
-  'C6 Bank',
-  'Sicoob',
-];
 
 function Chip({label, selected, onPress}: {label: string; selected: boolean; onPress: () => void}) {
   return (
@@ -50,7 +38,8 @@ export function PerfilDadosBancariosScreen() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [bank, setBank] = useState('');
+  const [bancos, setBancos] = useState<BancoOption[]>([]);
+  const [bancoId, setBancoId] = useState<number | null>(null);
   const [bankPickerOpen, setBankPickerOpen] = useState(false);
   const [agency, setAgency] = useState('');
   const [account, setAccount] = useState('');
@@ -59,10 +48,13 @@ export function PerfilDadosBancariosScreen() {
   const [pix, setPix] = useState('');
 
   useEffect(() => {
+    listarBancos()
+      .then(res => setBancos(res.data.data))
+      .catch(() => {});
     getDadosBancarios()
       .then(res => {
         const d = res.data;
-        setBank(d.banco_nome);
+        setBancoId(d.banco_id);
         setAgency(d.agencia);
         setAccount(d.conta);
         setAccountType(d.tipo_conta);
@@ -75,17 +67,17 @@ export function PerfilDadosBancariosScreen() {
       .finally(() => setLoading(false));
   }, []);
 
-  const valid = Boolean(bank && agency.trim() && account.trim() && (transferType !== 'pix' || pix.trim()));
+  const bancoNome = bancos.find(b => b.id === bancoId)?.nome ?? '';
+  const valid = Boolean(bancoId && agency.trim() && account.trim() && (transferType !== 'pix' || pix.trim()));
 
   async function handleSubmit() {
-    if (!valid) {
+    if (!valid || !bancoId) {
       setError('Preencha os dados bancários (e o Pix, se essa for a forma de recebimento) para continuar.');
       return;
     }
     setSaving(true);
     setError(null);
     try {
-      const bancoId = BANKS.indexOf(bank) + 1;
       await atualizarDadosBancarios({
         bancoId,
         agencia: agency.trim(),
@@ -123,7 +115,7 @@ export function PerfilDadosBancariosScreen() {
 
         <Text style={styles.label}>Banco</Text>
         <TouchableOpacity style={styles.select} onPress={() => setBankPickerOpen(true)} activeOpacity={0.8}>
-          <Text style={bank ? styles.selectValue : styles.selectPlaceholder}>{bank || 'Selecione o banco'}</Text>
+          <Text style={bancoNome ? styles.selectValue : styles.selectPlaceholder}>{bancoNome || 'Selecione o banco'}</Text>
         </TouchableOpacity>
 
         <View style={styles.row}>
@@ -180,16 +172,16 @@ export function PerfilDadosBancariosScreen() {
           <View style={styles.modalSheet}>
             <Text style={styles.modalTitle}>Selecione o banco</Text>
             <FlatList
-              data={BANKS}
-              keyExtractor={item => item}
+              data={bancos}
+              keyExtractor={item => String(item.id)}
               renderItem={({item}) => (
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => {
-                    setBank(item);
+                    setBancoId(item.id);
                     setBankPickerOpen(false);
                   }}>
-                  <Text style={styles.modalItemText}>{item}</Text>
+                  <Text style={styles.modalItemText}>{item.nome}</Text>
                 </TouchableOpacity>
               )}
             />

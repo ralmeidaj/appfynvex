@@ -23,6 +23,11 @@ export interface EmpresaFixture {
   // só quando confirmar-dados cria o primeiro representante (RF-REP-01), que
   // precisa de um email (RF-REP-07) igual qualquer outro representante.
   cadastroEmail?: string;
+  // RF-TERM-02: registro imutável de qual versão dos Termos de Uso foi
+  // aceita e quando — nunca sobrescrito por um aceite posterior (um novo
+  // aceite, se a versão mudar, seria um registro novo, não visto ainda).
+  termosVersao?: string;
+  termosAceitosEm?: string;
 }
 
 // Um CNPJ fixo por kyc_status, para exercitar os 4 caminhos do login sem
@@ -119,6 +124,16 @@ export function updateEmpresaNomeFantasia(empresaId: number, nomeFantasia: strin
   const empresa = findEmpresaById(empresaId);
   if (empresa) {
     empresa.nomeFantasia = nomeFantasia;
+  }
+}
+
+// RF-TERM-02: só registra na primeira vez — imutável, não sobrescreve um
+// aceite já registrado (mesmo espírito de contratoMaeSignedAt).
+export function registrarAceiteTermos(empresaId: number, versaoTermos: string): void {
+  const empresa = findEmpresaById(empresaId);
+  if (empresa && !empresa.termosAceitosEm) {
+    empresa.termosVersao = versaoTermos;
+    empresa.termosAceitosEm = new Date().toISOString();
   }
 }
 

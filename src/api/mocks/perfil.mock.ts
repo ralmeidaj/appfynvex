@@ -15,6 +15,7 @@ import {
   validarCodigoConviteVisualizador,
   setEmpresaBankData,
   findBancoNome,
+  BANCOS_MOCK,
   type BankDataFixture,
 } from './fixtures';
 import type {PerfilAcesso} from '../../types';
@@ -67,6 +68,11 @@ export async function mockGetPerfil(config: InternalAxiosRequestConfig) {
 // RF-REP-02: dados bancários são só de representante_legal — um visualizador
 // não tem acesso nenhum a esta rota (nem mascarado; a especificação mudou
 // isso, dados bancários não fazem parte do que ele acompanha).
+// §4.5 — público, sem checagem de sessão.
+export async function mockListarBancos() {
+  return {status: 200, data: {data: BANCOS_MOCK}};
+}
+
 export async function mockGetDadosBancarios(config: InternalAxiosRequestConfig) {
   const authHeader = config.headers?.Authorization as string | undefined;
   const empresaId = empresaIdFromAuthHeader(authHeader);

@@ -18,6 +18,11 @@ export type AntecipacaoStatus =
 
 export type PagamentoStatus = 'pending' | 'paid';
 
+// RF-TER-01 — quem originou a solicitação: a própria empresa (self-service)
+// ou um terceiro convenente (gestora/hospital), que chega pronta pra
+// aprovação (RF-TER-02 a 07).
+export type AntecipacaoOrigem = 'self' | 'gestora' | 'hospital_convenio';
+
 // RF-CAD-11/12/13 — vínculo de parceiro de originação (hoje: Departamento de Convênios da ABM).
 export type VinculoParceiroStatus = 'nao_vinculado' | 'pendente' | 'confirmado';
 

@@ -89,5 +89,9 @@ export const salvarDadosBancarios = (cadastroId: number, dados: DadosBancariosPa
     pix: dados.pix,
   });
 
-export const aceitarTermos = (cadastroId: number) =>
-  apiClient.post<AceiteTermosResponse>(`/cadastro/${cadastroId}/aceite-termos`);
+// RF-TERM-02: registra qual versão do termo foi de fato aceita.
+export const aceitarTermos = (cadastroId: number, versaoTermos: string) =>
+  apiClient.post<AceiteTermosResponse>(`/cadastro/${cadastroId}/aceite-termos`, {
+    termos_aceitos: true,
+    versao_termos: versaoTermos,
+  });
