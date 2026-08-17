@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text} from './AppText';
 
 // Card de anexo de documento — reusado entre o cadastro (Contrato Social/
 // Procuração) e a solicitação de antecipação (Nota Fiscal), mesmo padrão de

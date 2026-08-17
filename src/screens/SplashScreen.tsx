@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import {Text} from '../components/AppText';
 import {FynvexLogo} from '../components/FynvexLogo';
 
 // Só visual — quem decide pra onde ir (Welcome/app) é o RootNavigator

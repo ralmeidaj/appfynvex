@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {Text} from '../../components/AppText';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
+import {Text} from '../../components/AppText';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {getContratoMae} from '../../api/antecipacoes';

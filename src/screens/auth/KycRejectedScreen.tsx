@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView} from 'react-native';
+import {Text} from '../../components/AppText';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {reenviarDocumentos} from '../../api/cadastro';
 import {useAuthStore} from '../../store/authStore';
