@@ -20,21 +20,24 @@ import {DocCard} from '../../components/DocCard';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
+// RF-CAD-01a: CNPJ aceita tanto o formato numérico (14 dígitos) quanto o
+// alfanumérico da Receita Federal (12 caracteres alfanuméricos + 2 dígitos
+// verificadores) — a máscara pontua por posição, não filtra letra x dígito.
 function formatCnpj(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 14);
-  if (digits.length <= 2) {
-    return digits;
+  const chars = value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 14);
+  if (chars.length <= 2) {
+    return chars;
   }
-  if (digits.length <= 5) {
-    return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  if (chars.length <= 5) {
+    return `${chars.slice(0, 2)}.${chars.slice(2)}`;
   }
-  if (digits.length <= 8) {
-    return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`;
+  if (chars.length <= 8) {
+    return `${chars.slice(0, 2)}.${chars.slice(2, 5)}.${chars.slice(5)}`;
   }
-  if (digits.length <= 12) {
-    return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`;
+  if (chars.length <= 12) {
+    return `${chars.slice(0, 2)}.${chars.slice(2, 5)}.${chars.slice(5, 8)}/${chars.slice(8)}`;
   }
-  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
+  return `${chars.slice(0, 2)}.${chars.slice(2, 5)}.${chars.slice(5, 8)}/${chars.slice(8, 12)}-${chars.slice(12)}`;
 }
 
 export function CadastroCnpjDocsScreen() {
@@ -54,8 +57,8 @@ export function CadastroCnpjDocsScreen() {
   const setCnpjStore = useCadastroStore(s => s.setCnpj);
   const setCadastroId = useCadastroStore(s => s.setCadastroId);
 
-  const cnpjDigits = cnpj.replace(/\D/g, '');
-  const valid = cnpjDigits.length === 14 && contratoSocialAttached && documentoIdentidadeAttached;
+  const cnpjChars = cnpj.toUpperCase().replace(/[^0-9A-Z]/g, '');
+  const valid = /^[0-9A-Z]{12}\d{2}$/.test(cnpjChars) && contratoSocialAttached && documentoIdentidadeAttached;
 
   async function handleSubmit() {
     if (!valid) {
@@ -64,8 +67,8 @@ export function CadastroCnpjDocsScreen() {
     setLoading(true);
     setError(null);
     try {
-      const res = await iniciarCadastro(cnpjDigits, parceiroCodigo.trim() || undefined);
-      setCnpjStore(cnpjDigits);
+      const res = await iniciarCadastro(cnpjChars, parceiroCodigo.trim() || undefined);
+      setCnpjStore(cnpjChars);
       setCadastroId(res.data.cadastro_id);
       navigation.navigate('CadastroAiExtract');
     } catch {
@@ -93,7 +96,8 @@ export function CadastroCnpjDocsScreen() {
             style={styles.input}
             placeholder="00.000.000/0000-00"
             placeholderTextColor="#9ca3af"
-            keyboardType="numeric"
+            autoCapitalize="characters"
+            autoCorrect={false}
             value={cnpj}
             onChangeText={v => setCnpj(formatCnpj(v))}
             maxLength={18}

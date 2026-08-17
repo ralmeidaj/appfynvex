@@ -72,8 +72,8 @@ export function AdvanceReviewScreen() {
       setModalOpen(true);
     } catch (err: any) {
       const errorCode = err?.response?.data?.error_code;
-      if (errorCode === 'NOTA_FISCAL_DUPLICADA') {
-        setError(err.response.data.message || 'Esta Nota Fiscal já foi utilizada em outra solicitação.');
+      if (errorCode === 'SALDO_NF_INSUFICIENTE') {
+        setError(err.response.data.message || 'Esta Nota Fiscal não tem saldo suficiente para este valor.');
       } else {
         setError('Não foi possível criar a solicitação. Tente novamente.');
       }
