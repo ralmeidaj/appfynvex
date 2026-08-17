@@ -27,7 +27,13 @@ export function DocCard({
         </Text>
         <Text style={attached ? styles.attachedHint : styles.hint}>{attached ? '✓ Anexado' : hint}</Text>
       </View>
-      <TouchableOpacity style={styles.action} onPress={onToggle} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={styles.action}
+        onPress={onToggle}
+        activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={`${attached ? 'Remover' : 'Selecionar'} anexo de ${title}`}
+        accessibilityState={{selected: attached}}>
         <Text style={styles.actionText}>{attached ? 'Remover' : 'Selecionar'}</Text>
       </TouchableOpacity>
     </View>
@@ -48,7 +54,7 @@ const styles = StyleSheet.create({
   cardAttached: {borderColor: '#124B9A'},
   info: {flex: 1, paddingRight: 12},
   title: {fontSize: 14, fontWeight: '700', color: '#0F2137'},
-  hint: {fontSize: 12, color: '#9ca3af', marginTop: 2},
+  hint: {fontSize: 12, color: '#6b7280', marginTop: 2},
   attachedHint: {fontSize: 12, color: '#124B9A', fontWeight: '600', marginTop: 2},
   action: {borderWidth: 1, borderColor: '#d1d5db', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8},
   actionText: {fontSize: 12, fontWeight: '700', color: '#0F2137'},

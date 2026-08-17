@@ -78,7 +78,11 @@ export function LoginCpfScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView style={styles.kav} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.back}
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar">
           <Text style={styles.backText}>‹ Voltar</Text>
         </TouchableOpacity>
 
@@ -89,7 +93,7 @@ export function LoginCpfScreen() {
           <TextInput
             style={[styles.input, valid && !error && styles.inputValid, error && styles.inputError]}
             placeholder="000.000.000-00"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             keyboardType="numeric"
             autoCorrect={false}
             value={cpf}
@@ -97,10 +101,11 @@ export function LoginCpfScreen() {
             maxLength={14}
             onSubmitEditing={handleSubmit}
             returnKeyType="send"
+            accessibilityLabel="CPF"
           />
 
           {error && (
-            <View style={styles.errorBox}>
+            <View style={styles.errorBox} accessibilityLiveRegion="polite">
               <Text style={styles.errorText}>{error}</Text>
             </View>
           )}
@@ -109,7 +114,10 @@ export function LoginCpfScreen() {
             style={[styles.btn, !valid && styles.btnDisabled]}
             onPress={handleSubmit}
             disabled={!valid || loading}
-            activeOpacity={0.85}>
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Continuar"
+            accessibilityState={{disabled: !valid || loading, busy: loading}}>
             {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.btnText}>Continuar</Text>}
           </TouchableOpacity>
 
@@ -141,11 +149,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   inputValid: {borderColor: '#124B9A'},
-  inputError: {borderColor: '#dc3545'},
+  inputError: {borderColor: '#b91c1c'},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 14},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center'},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},
-  hint: {color: '#9ca3af', fontSize: 12, textAlign: 'center', marginTop: 16, lineHeight: 18},
+  hint: {color: '#6b7280', fontSize: 12, textAlign: 'center', marginTop: 16, lineHeight: 18},
 });

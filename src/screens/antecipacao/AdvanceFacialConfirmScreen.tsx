@@ -73,7 +73,12 @@ export function AdvanceFacialConfirmScreen() {
         <View style={styles.content}>
           <Text style={styles.title}>Algo deu errado</Text>
           <Text style={styles.subtitle}>{error}</Text>
-          <TouchableOpacity style={styles.btn} onPress={() => navigation.goBack()} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar">
             <Text style={styles.btnText}>Voltar</Text>
           </TouchableOpacity>
         </View>
@@ -93,22 +98,34 @@ export function AdvanceFacialConfirmScreen() {
         </Text>
 
         {error && (
-          <View style={styles.errorBox}>
+          <View style={styles.errorBox} accessibilityLiveRegion="polite">
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
         {(phase === 'iniciando' || phase === 'confirmando') && (
-          <ActivityIndicator color="#124B9A" style={styles.spinner} />
+          <ActivityIndicator
+            color="#124B9A"
+            style={styles.spinner}
+            accessibilityLabel={phase === 'iniciando' ? 'Iniciando confirmação' : 'Confirmando assinatura'}
+          />
         )}
 
         {phase === 'capturando' && (
-          <TouchableOpacity style={styles.btn} onPress={handleSimulateCapture} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={handleSimulateCapture}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Simular leitura facial">
             <Text style={styles.btnText}>Simular leitura facial</Text>
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
+          accessibilityRole="button"
+          accessibilityLabel="Cancelar">
           <Text style={styles.link}>Cancelar</Text>
         </TouchableOpacity>
       </View>
@@ -132,7 +149,7 @@ const styles = StyleSheet.create({
   title: {fontSize: 19, fontWeight: '800', color: '#0F2137', textAlign: 'center', marginBottom: 8},
   subtitle: {fontSize: 14, color: '#6b7280', textAlign: 'center', lineHeight: 20, marginBottom: 20},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 16, width: '100%'},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19, textAlign: 'center'},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19, textAlign: 'center'},
   spinner: {marginTop: 8, marginBottom: 24},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, paddingVertical: 14, paddingHorizontal: 28, marginTop: 8},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

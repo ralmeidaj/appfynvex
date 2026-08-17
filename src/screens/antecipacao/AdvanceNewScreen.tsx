@@ -41,7 +41,11 @@ export function AdvanceNewScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => navigation.goBack()}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar">
         <Text style={styles.backText}>‹ Voltar</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.content}>
@@ -59,7 +63,13 @@ export function AdvanceNewScreen() {
           onToggle={() => setAttached(!attached)}
         />
 
-        <TouchableOpacity style={styles.checkboxRow} onPress={() => setConsentAccepted(!consentAccepted)} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.checkboxRow}
+          onPress={() => setConsentAccepted(!consentAccepted)}
+          activeOpacity={0.8}
+          accessibilityRole="checkbox"
+          accessibilityState={{checked: consentAccepted}}
+          accessibilityLabel="Autorizo a leitura desta Nota Fiscal por inteligência artificial (OCR) para extração automática dos dados.">
           <View style={[styles.checkbox, consentAccepted && styles.checkboxChecked]}>
             {consentAccepted && <Text style={styles.checkboxMark}>✓</Text>}
           </View>
@@ -69,7 +79,7 @@ export function AdvanceNewScreen() {
         </TouchableOpacity>
 
         {error && (
-          <View style={styles.errorBox}>
+          <View style={styles.errorBox} accessibilityLiveRegion="polite">
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
@@ -78,7 +88,10 @@ export function AdvanceNewScreen() {
           style={[styles.btn, !canSubmit && styles.btnDisabled]}
           onPress={handleSubmit}
           disabled={!canSubmit || loading}
-          activeOpacity={0.85}>
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Enviar Nota Fiscal"
+          accessibilityState={{disabled: !canSubmit || loading, busy: loading}}>
           {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.btnText}>Enviar Nota Fiscal</Text>}
         </TouchableOpacity>
       </ScrollView>
@@ -94,7 +107,7 @@ const styles = StyleSheet.create({
   title: {fontSize: 26, fontWeight: '800', color: '#0F2137', marginBottom: 10},
   subtitle: {fontSize: 14, color: '#6b7280', lineHeight: 20, marginBottom: 20},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

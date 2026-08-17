@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: {fontSize: 19, fontWeight: '800', color: '#0F2137', textAlign: 'center', marginBottom: 8},
   subtitle: {fontSize: 14, color: '#6b7280', textAlign: 'center', lineHeight: 20, marginBottom: 20},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 16, width: '100%'},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19, textAlign: 'center'},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19, textAlign: 'center'},
   spinner: {marginTop: 8, marginBottom: 24},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, paddingVertical: 14, paddingHorizontal: 28, marginTop: 8},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

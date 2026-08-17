@@ -66,7 +66,11 @@ export function SenhaScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView style={styles.kav} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.back}
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar">
           <Text style={styles.backText}>‹ Voltar</Text>
         </TouchableOpacity>
 
@@ -77,7 +81,7 @@ export function SenhaScreen() {
           <TextInput
             style={styles.input}
             placeholder="Senha"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             secureTextEntry
             value={senha}
             onChangeText={v => {
@@ -87,10 +91,11 @@ export function SenhaScreen() {
             onSubmitEditing={handleSubmit}
             returnKeyType="send"
             autoFocus
+            accessibilityLabel="Senha"
           />
 
           {error && (
-            <View style={styles.errorBox}>
+            <View style={styles.errorBox} accessibilityLiveRegion="polite">
               <Text style={styles.errorText}>{error}</Text>
             </View>
           )}
@@ -99,11 +104,14 @@ export function SenhaScreen() {
             style={[styles.btn, !valid && styles.btnDisabled]}
             onPress={handleSubmit}
             disabled={!valid || loading}
-            activeOpacity={0.85}>
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Continuar"
+            accessibilityState={{disabled: !valid || loading, busy: loading}}>
             {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.btnText}>Continuar</Text>}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('RecuperarConta')}>
+          <TouchableOpacity onPress={() => navigation.navigate('RecuperarConta')} accessibilityRole="link">
             <Text style={styles.link}>Perdi meu acesso</Text>
           </TouchableOpacity>
         </View>
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 14},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center'},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

@@ -24,19 +24,31 @@ export function WelcomeScreen() {
         <TouchableOpacity
           style={styles.btn}
           onPress={() => navigation.navigate('CadastroCnpjDocs')}
-          activeOpacity={0.85}>
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Novo cadastro">
           <Text style={styles.btnText}>Novo cadastro</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnOutline}
           onPress={() => navigation.navigate('LoginCpf')}
-          activeOpacity={0.85}>
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Já sou cadastrado">
           <Text style={styles.btnOutlineText}>Já sou cadastrado</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Simulador')} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Simulador')}
+          activeOpacity={0.7}
+          accessibilityRole="link"
+          accessibilityLabel="Simular sem cadastro">
           <Text style={styles.simulatorLink}>Simular sem cadastro</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ConviteEscolha')} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ConviteEscolha')}
+          activeOpacity={0.7}
+          accessibilityRole="link"
+          accessibilityLabel="Recebi um convite">
           <Text style={styles.simulatorLink}>Recebi um convite</Text>
         </TouchableOpacity>
       </View>

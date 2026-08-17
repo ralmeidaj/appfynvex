@@ -81,7 +81,7 @@ export function ConviteAceitarScreen() {
           <TextInput
             style={styles.input}
             placeholder="Código de convite"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             autoCapitalize="characters"
             value={conviteId}
             onChangeText={v => setConviteId(v.toUpperCase())}
@@ -89,7 +89,7 @@ export function ConviteAceitarScreen() {
           <TextInput
             style={styles.input}
             placeholder="Defina sua senha"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             secureTextEntry
             value={senha}
             onChangeText={setSenha}
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 14},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 8},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

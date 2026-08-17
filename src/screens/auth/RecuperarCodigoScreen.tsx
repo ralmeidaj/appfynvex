@@ -66,7 +66,7 @@ export function RecuperarCodigoScreen() {
           <TextInput
             style={styles.input}
             placeholder="Código de 6 dígitos"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             keyboardType="number-pad"
             maxLength={6}
             value={codigo}
@@ -75,7 +75,7 @@ export function RecuperarCodigoScreen() {
           <TextInput
             style={styles.input}
             placeholder="Nova senha"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             secureTextEntry
             value={novaSenha}
             onChangeText={setNovaSenha}
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginBottom: 14},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 8},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

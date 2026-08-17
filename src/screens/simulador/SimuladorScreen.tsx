@@ -56,7 +56,7 @@ export function SimuladorScreen() {
         <TextInput
           style={styles.input}
           placeholder="0,00"
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#6b7280"
           keyboardType="numeric"
           value={valorTexto}
           onChangeText={setValorTexto}
@@ -66,7 +66,7 @@ export function SimuladorScreen() {
         <TextInput
           style={styles.input}
           placeholder="00/00/0000"
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#6b7280"
           value={vencimento}
           onChangeText={setVencimento}
         />
@@ -143,14 +143,14 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 16, marginTop: 24},
   row: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12},
   muted: {fontSize: 14, color: '#6b7280'},
   bold: {fontSize: 14, fontWeight: '700', color: '#0F2137'},
-  negative: {fontSize: 14, color: '#dc3545'},
+  negative: {fontSize: 14, color: '#b91c1c'},
   divider: {height: 1, backgroundColor: '#f0f1f3', marginVertical: 4},
   netValue: {fontSize: 18, fontWeight: '800', color: '#16a34a'},
   infoBox: {backgroundColor: '#eef3ff', borderRadius: 10, padding: 14, marginTop: 12},

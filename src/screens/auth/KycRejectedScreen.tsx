@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   motivoText: {color: '#991b1b', fontSize: 13, lineHeight: 19},
   subtitle: {fontSize: 14, color: '#6b7280', lineHeight: 20, marginBottom: 20},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 4, marginBottom: 12},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 8},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

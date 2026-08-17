@@ -24,7 +24,7 @@ export function AdvanceSuccessScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.content}>
-        <View style={styles.iconCircle}>
+        <View style={styles.iconCircle} importantForAccessibility="no-hide-descendants">
           <Text style={styles.icon}>✓</Text>
         </View>
         <Text style={styles.title}>Antecipação solicitada!</Text>
@@ -42,7 +42,12 @@ export function AdvanceSuccessScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.btn} onPress={handleDone} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={handleDone}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar para o início">
           <Text style={styles.btnText}>Voltar para o início</Text>
         </TouchableOpacity>
       </View>
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  cardLabel: {fontSize: 11, fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: 0.4},
+  cardLabel: {fontSize: 11, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.4},
   heroValue: {fontSize: 26, fontWeight: '800', color: '#16a34a', marginTop: 6},
   muted: {fontSize: 13, color: '#6b7280', marginTop: 8},
   bold: {fontWeight: '700', color: '#0F2137'},

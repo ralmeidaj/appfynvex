@@ -104,7 +104,7 @@ export function PerfilConvidarRepresentanteScreen() {
         </Text>
 
         <Text style={styles.label}>Nome completo</Text>
-        <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="Nome do convidado" placeholderTextColor="#9ca3af" />
+        <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="Nome do convidado" placeholderTextColor="#6b7280" />
 
         <Text style={styles.label}>CPF</Text>
         <TextInput
@@ -112,7 +112,7 @@ export function PerfilConvidarRepresentanteScreen() {
           value={cpf}
           onChangeText={v => setCpf(formatCpf(v))}
           placeholder="000.000.000-00"
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#6b7280"
           keyboardType="numeric"
           maxLength={14}
         />
@@ -120,7 +120,7 @@ export function PerfilConvidarRepresentanteScreen() {
         {perfilAcesso === 'representante_legal' && (
           <>
             <Text style={styles.label}>Cargo</Text>
-            <TextInput style={styles.input} value={cargo} onChangeText={setCargo} placeholder="Ex.: Sócio" placeholderTextColor="#9ca3af" />
+            <TextInput style={styles.input} value={cargo} onChangeText={setCargo} placeholder="Ex.: Sócio" placeholderTextColor="#6b7280" />
           </>
         )}
 
@@ -130,7 +130,7 @@ export function PerfilConvidarRepresentanteScreen() {
           value={email}
           onChangeText={setEmail}
           placeholder="email@exemplo.com.br"
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#6b7280"
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

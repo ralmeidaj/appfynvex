@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 14, marginBottom: 12},
   companyName: {fontSize: 16, fontWeight: '700', color: '#0F2137'},
   muted: {fontSize: 12, color: '#6b7280', marginTop: 3},
-  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: 0.4},
+  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.4},
   fieldValue: {fontSize: 15, fontWeight: '600', color: '#111827', marginTop: 2},
   actionRow: {
     flexDirection: 'row',
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   actionInfo: {flex: 1},
   actionTitle: {fontSize: 14, fontWeight: '600', color: '#0F2137'},
   actionSubtitle: {fontSize: 12, color: '#6b7280', marginTop: 2},
-  chevron: {fontSize: 20, color: '#9ca3af'},
-  logoutBtn: {borderWidth: 1.5, borderColor: '#dc3545', borderRadius: 12, padding: 15, alignItems: 'center', marginTop: 12},
-  logoutText: {color: '#dc3545', fontSize: 15, fontWeight: '700'},
+  chevron: {fontSize: 20, color: '#6b7280'},
+  logoutBtn: {borderWidth: 1.5, borderColor: '#b91c1c', borderRadius: 12, padding: 15, alignItems: 'center', marginTop: 12},
+  logoutText: {color: '#b91c1c', fontSize: 15, fontWeight: '700'},
 });

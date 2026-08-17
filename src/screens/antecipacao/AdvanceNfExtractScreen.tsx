@@ -54,7 +54,7 @@ export function AdvanceNfExtractScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.content}>
-        <View style={styles.iconCircle}>
+        <View style={styles.iconCircle} importantForAccessibility="no-hide-descendants">
           <Text style={styles.icon}>🤖</Text>
         </View>
         <Text style={styles.title}>Analisando a Nota Fiscal</Text>
@@ -62,7 +62,7 @@ export function AdvanceNfExtractScreen() {
           Nossa IA está lendo o documento e identificando os dados do recebível. Isso leva poucos
           segundos.
         </Text>
-        <ActivityIndicator color="#0F2137" style={styles.spinner} />
+        <ActivityIndicator color="#0F2137" style={styles.spinner} accessibilityLabel="Analisando a Nota Fiscal" />
       </View>
     </SafeAreaView>
   );

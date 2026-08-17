@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   checkboxDisabled: {backgroundColor: '#f3f4f6'},
   checkboxMark: {color: '#ffffff', fontSize: 14, fontWeight: '800'},
   checkboxLabel: {flex: 1, fontSize: 13, color: '#374151', lineHeight: 19},
-  scrollHint: {fontSize: 12, color: '#9ca3af', marginTop: 6, marginLeft: 32},
+  scrollHint: {fontSize: 12, color: '#6b7280', marginTop: 6, marginLeft: 32},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

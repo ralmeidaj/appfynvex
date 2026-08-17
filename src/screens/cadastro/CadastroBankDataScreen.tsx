@@ -106,11 +106,11 @@ export function CadastroBankDataScreen() {
         <View style={styles.row}>
           <View style={styles.rowItem}>
             <Text style={styles.label}>Agência</Text>
-            <TextInput style={styles.input} placeholder="0000" placeholderTextColor="#9ca3af" value={agency} onChangeText={setAgency} keyboardType="numeric" />
+            <TextInput style={styles.input} placeholder="0000" placeholderTextColor="#6b7280" value={agency} onChangeText={setAgency} keyboardType="numeric" />
           </View>
           <View style={styles.rowItem}>
             <Text style={styles.label}>Conta</Text>
-            <TextInput style={styles.input} placeholder="00000-0" placeholderTextColor="#9ca3af" value={account} onChangeText={setAccount} />
+            <TextInput style={styles.input} placeholder="00000-0" placeholderTextColor="#6b7280" value={account} onChangeText={setAccount} />
           </View>
         </View>
 
@@ -132,7 +132,7 @@ export function CadastroBankDataScreen() {
         <TextInput
           style={styles.input}
           placeholder="Sua chave ou código Pix"
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#6b7280"
           value={pix}
           onChangeText={setPix}
         />
@@ -205,13 +205,13 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   selectValue: {fontSize: 15, color: '#111827'},
-  selectPlaceholder: {fontSize: 15, color: '#9ca3af'},
+  selectPlaceholder: {fontSize: 15, color: '#6b7280'},
   row: {flexDirection: 'row', gap: 12, marginTop: 14},
   rowItem: {flex: 1},
   chipRow: {flexDirection: 'row', gap: 10},
   divider: {height: 1, backgroundColor: '#e5e7eb', marginVertical: 16},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},

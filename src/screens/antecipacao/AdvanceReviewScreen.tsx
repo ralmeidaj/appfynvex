@@ -111,7 +111,11 @@ export function AdvanceReviewScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => navigation.goBack()}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar">
         <Text style={styles.backText}>‹ Voltar</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.content}>
@@ -138,7 +142,7 @@ export function AdvanceReviewScreen() {
         </View>
 
         {error && (
-          <View style={styles.errorBox}>
+          <View style={styles.errorBox} accessibilityLiveRegion="polite">
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
@@ -147,7 +151,10 @@ export function AdvanceReviewScreen() {
           style={styles.btn}
           onPress={handleStartSignature}
           disabled={creating || signing}
-          activeOpacity={0.85}>
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Assinar e confirmar"
+          accessibilityState={{disabled: creating || signing, busy: creating}}>
           {creating ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.btnText}>Assinar e confirmar</Text>}
         </TouchableOpacity>
       </ScrollView>
@@ -163,7 +170,10 @@ export function AdvanceReviewScreen() {
               style={styles.checkboxRow}
               onPress={() => scrolledToEnd && setAccepted(!accepted)}
               disabled={!scrolledToEnd}
-              activeOpacity={0.8}>
+              activeOpacity={0.8}
+              accessibilityRole="checkbox"
+              accessibilityState={{checked: accepted, disabled: !scrolledToEnd}}
+              accessibilityLabel="Li e aceito os termos desta cessão de recebíveis.">
               <View style={[styles.checkbox, accepted && styles.checkboxChecked, !scrolledToEnd && styles.checkboxDisabled]}>
                 {accepted && <Text style={styles.checkboxMark}>✓</Text>}
               </View>
@@ -176,10 +186,16 @@ export function AdvanceReviewScreen() {
               style={[styles.btn, !accepted && styles.btnDisabled]}
               onPress={handleConfirmSignature}
               disabled={!accepted}
-              activeOpacity={0.85}>
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel="Assinar e confirmar"
+              accessibilityState={{disabled: !accepted}}>
               <Text style={styles.btnText}>Assinar e confirmar</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalOpen(false)}>
+            <TouchableOpacity
+              onPress={() => setModalOpen(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Cancelar">
               <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
@@ -198,11 +214,11 @@ const styles = StyleSheet.create({
   subtitle: {fontSize: 14, color: '#6b7280', lineHeight: 20, marginBottom: 16},
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 16},
   field: {paddingVertical: 4},
-  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: 0.4},
+  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.4},
   fieldValue: {fontSize: 14, color: '#111827', marginTop: 4, fontWeight: '600'},
   divider: {height: 1, backgroundColor: '#f0f1f3', marginVertical: 10},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},
@@ -226,6 +242,6 @@ const styles = StyleSheet.create({
   checkboxDisabled: {backgroundColor: '#f3f4f6'},
   checkboxMark: {color: '#ffffff', fontSize: 14, fontWeight: '800'},
   checkboxLabel: {flex: 1, fontSize: 13, color: '#374151', lineHeight: 19},
-  scrollHint: {fontSize: 12, color: '#9ca3af', marginTop: 6, marginLeft: 32},
+  scrollHint: {fontSize: 12, color: '#6b7280', marginTop: 6, marginLeft: 32},
   cancelText: {color: '#6b7280', fontSize: 14, textAlign: 'center', marginTop: 14},
 });

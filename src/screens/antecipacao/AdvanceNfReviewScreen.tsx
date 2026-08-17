@@ -30,6 +30,7 @@ function EditableField({
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType ?? 'default'}
+        accessibilityLabel={label}
       />
     </View>
   );
@@ -94,7 +95,11 @@ export function AdvanceNfReviewScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => navigation.goBack()}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar">
         <Text style={styles.backText}>‹ Voltar</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -133,12 +138,19 @@ export function AdvanceNfReviewScreen() {
         </Text>
 
         {error && (
-          <View style={styles.errorBox}>
+          <View style={styles.errorBox} accessibilityLiveRegion="polite">
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
-        <TouchableOpacity style={styles.btn} onPress={handleContinue} disabled={loading} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={handleContinue}
+          disabled={loading}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Continuar"
+          accessibilityState={{disabled: loading, busy: loading}}>
           {loading ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.btnText}>Continuar</Text>}
         </TouchableOpacity>
       </ScrollView>
@@ -155,12 +167,12 @@ const styles = StyleSheet.create({
   subtitle: {fontSize: 14, color: '#6b7280', lineHeight: 20, marginBottom: 16},
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 16},
   field: {paddingVertical: 4},
-  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: 0.4},
+  fieldLabel: {fontSize: 11, fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.4},
   fieldInput: {fontSize: 15, color: '#111827', marginTop: 4, fontWeight: '600', paddingVertical: 4},
   divider: {height: 1, backgroundColor: '#f0f1f3', marginVertical: 6},
   hint: {fontSize: 12, color: '#6b7280', lineHeight: 17, marginTop: 10},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},
 });

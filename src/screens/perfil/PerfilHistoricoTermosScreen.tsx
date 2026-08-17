@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 14, marginBottom: 12},
   itemTitle: {fontSize: 14, fontWeight: '700', color: '#0F2137'},
   itemStatus: {fontSize: 12, color: '#15803d', marginTop: 4, fontWeight: '600'},
-  itemStatusPending: {fontSize: 12, color: '#9ca3af', marginTop: 4},
+  itemStatusPending: {fontSize: 12, color: '#6b7280', marginTop: 4},
   spinner: {alignSelf: 'flex-start', marginTop: 6},
-  note: {fontSize: 12, color: '#9ca3af', lineHeight: 18, marginTop: 8},
+  note: {fontSize: 12, color: '#6b7280', lineHeight: 18, marginTop: 8},
 });

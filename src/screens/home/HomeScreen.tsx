@@ -24,7 +24,7 @@ const STATUS_BADGE: Record<AntecipacaoStatus, {bg: string; text: string; label: 
   aguardando_liquidacao: {bg: '#fef3c7', text: '#92400e', label: 'Aguardando liquidação'},
   liquidada: {bg: '#dcfce7', text: '#15803d', label: 'Liquidada'},
   em_atraso: {bg: '#fee2e2', text: '#991b1b', label: 'Em atraso'},
-  cancelada: {bg: '#f1f5f9', text: '#64748b', label: 'Cancelada'},
+  cancelada: {bg: '#f1f5f9', text: '#475569', label: 'Cancelada'},
 };
 
 function ItemSeparator() {
@@ -115,12 +115,26 @@ export function HomeScreen() {
       }
     }
 
+    const cardActionLabel = canApproveTerceiro
+      ? 'Revisar e aprovar'
+      : canOpenLiquidacao
+        ? item.status === 'liquidada'
+          ? 'Ver comprovante'
+          : 'Ver detalhes da liquidação'
+        : '';
+    const cardAccessibilityLabel =
+      `${item.tomador}, NF ${item.nf_numero} · Líquido ${formatBRL(item.valor_liquido)}, ` +
+      `Crédito em ${formatDateBR(item.data_credito)}, ${badge.label}` +
+      (cardActionLabel ? `, ${cardActionLabel}` : '');
+
     return (
       <TouchableOpacity
         style={styles.card}
         onPress={cardTappable ? handlePressCard : undefined}
         disabled={!cardTappable}
-        activeOpacity={cardTappable ? 0.7 : 1}>
+        activeOpacity={cardTappable ? 0.7 : 1}
+        accessibilityRole={cardTappable ? 'button' : undefined}
+        accessibilityLabel={cardTappable ? cardAccessibilityLabel : undefined}>
         <View style={styles.cardTop}>
           <View style={styles.cardInfo}>
             <Text style={styles.cardTomador}>{item.tomador}</Text>
@@ -146,12 +160,18 @@ export function HomeScreen() {
         )}
         {canApproveTerceiro && <Text style={styles.actionLink}>Revisar e aprovar ›</Text>}
         {item.status === 'credito_efetuado' && (
-          <TouchableOpacity onPress={() => handleViewCreditoComprovante(item)}>
+          <TouchableOpacity
+            onPress={() => handleViewCreditoComprovante(item)}
+            accessibilityRole="button"
+            accessibilityLabel="Ver comprovante">
             <Text style={styles.actionLink}>Ver comprovante ›</Text>
           </TouchableOpacity>
         )}
         {canCancel && (
-          <TouchableOpacity onPress={() => handleCancel(item.id)}>
+          <TouchableOpacity
+            onPress={() => handleCancel(item.id)}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar solicitação">
             <Text style={styles.cancelLink}>Cancelar solicitação</Text>
           </TouchableOpacity>
         )}
@@ -167,18 +187,28 @@ export function HomeScreen() {
       </View>
 
       <View style={styles.body}>
-        <TouchableOpacity style={styles.newBtn} onPress={handleNewRequest} disabled={checkingMae} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={styles.newBtn}
+          onPress={handleNewRequest}
+          disabled={checkingMae}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Nova solicitação"
+          accessibilityState={{disabled: checkingMae, busy: checkingMae}}>
           {checkingMae ? <ActivityIndicator color="#ffffff" /> : <Text style={styles.newBtnText}>+ Nova solicitação</Text>}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Simulador')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Simulador')}
+          accessibilityRole="link"
+          accessibilityLabel="Simular uma nova antecipação">
           <Text style={styles.simularLink}>Simular uma nova antecipação</Text>
         </TouchableOpacity>
 
         <Text style={styles.listLabel}>Minhas antecipações</Text>
 
         {loading ? (
-          <ActivityIndicator color="#0F2137" style={styles.loadingSpinner} />
+          <ActivityIndicator color="#0F2137" style={styles.loadingSpinner} accessibilityLabel="Carregando antecipações" />
         ) : (
           <FlatList
             data={items}
@@ -210,15 +240,15 @@ const styles = StyleSheet.create({
   loadingSpinner: {marginTop: 40},
   listContent: {paddingBottom: 24},
   separator: {height: 10},
-  empty: {color: '#9ca3af', fontSize: 14, textAlign: 'center', marginTop: 32},
+  empty: {color: '#6b7280', fontSize: 14, textAlign: 'center', marginTop: 32},
   card: {backgroundColor: '#ffffff', borderRadius: 12, borderWidth: 1, borderColor: '#e5e7eb', padding: 14},
   cardTop: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'},
   cardInfo: {flex: 1, paddingRight: 10},
   cardTomador: {fontSize: 15, fontWeight: '700', color: '#0F2137'},
   cardMuted: {fontSize: 12, color: '#6b7280', marginTop: 2},
-  motivo: {fontSize: 12, color: '#dc3545', marginTop: 6, lineHeight: 17},
+  motivo: {fontSize: 12, color: '#b91c1c', marginTop: 6, lineHeight: 17},
   badge: {borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4},
   badgeText: {fontSize: 11, fontWeight: '700'},
   actionLink: {color: '#124B9A', fontSize: 13, fontWeight: '600', marginTop: 10},
-  cancelLink: {color: '#dc3545', fontSize: 13, fontWeight: '600', marginTop: 10},
+  cancelLink: {color: '#b91c1c', fontSize: 13, fontWeight: '600', marginTop: 10},
 });

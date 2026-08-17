@@ -223,6 +223,6 @@ const styles = StyleSheet.create({
   muted: {fontSize: 12, color: '#6b7280', marginTop: 2},
   actions: {flexDirection: 'row', justifyContent: 'flex-end', gap: 16, marginTop: 10},
   actionLink: {color: '#124B9A', fontSize: 13, fontWeight: '600'},
-  removeLink: {color: '#dc3545', fontSize: 13, fontWeight: '600'},
-  avisoUnico: {fontSize: 12, color: '#9ca3af', marginTop: 4, lineHeight: 17, textAlign: 'right'},
+  removeLink: {color: '#b91c1c', fontSize: 13, fontWeight: '600'},
+  avisoUnico: {fontSize: 12, color: '#6b7280', marginTop: 4, lineHeight: 17, textAlign: 'right'},
 });

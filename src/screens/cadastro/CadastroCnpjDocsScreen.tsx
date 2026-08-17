@@ -95,7 +95,7 @@ export function CadastroCnpjDocsScreen() {
           <TextInput
             style={styles.input}
             placeholder="00.000.000/0000-00"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             autoCapitalize="characters"
             autoCorrect={false}
             value={cnpj}
@@ -130,7 +130,7 @@ export function CadastroCnpjDocsScreen() {
           <TextInput
             style={styles.input}
             placeholder="Código do parceiro/convênio, se houver"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             value={parceiroCodigo}
             onChangeText={setParceiroCodigo}
             autoCapitalize="characters"
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#111827',
   },
-  hint: {fontSize: 12, color: '#9ca3af', marginTop: 6, lineHeight: 17},
+  hint: {fontSize: 12, color: '#6b7280', marginTop: 6, lineHeight: 17},
   errorBox: {backgroundColor: '#fef2f2', borderRadius: 10, padding: 12, marginTop: 16},
-  errorText: {color: '#dc3545', fontSize: 13, lineHeight: 19},
+  errorText: {color: '#b91c1c', fontSize: 13, lineHeight: 19},
   btn: {backgroundColor: '#124B9A', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20},
   btnDisabled: {backgroundColor: '#93c5fd'},
   btnText: {color: '#ffffff', fontSize: 16, fontWeight: '700'},
