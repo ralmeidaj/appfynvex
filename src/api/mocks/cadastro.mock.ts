@@ -9,6 +9,7 @@ import {
   criarRepresentante,
   findRepresentantesByEmpresa,
   registrarAceiteTermos,
+  reenviarDocumentosCadastro,
   AI_EXTRACTION_MOCK,
   type BankDataFixture,
 } from './fixtures';
@@ -152,4 +153,16 @@ export async function mockAceiteTermos(cadastroId: number, versaoTermos: string)
       expires_in: 604800,
     },
   };
+}
+
+// RF-KYC-04: reenvio de documentos corrigidos depois de uma rejeição — não
+// exige logout/login de novo, o app já reage à mudança de kyc_status via
+// setAuth (ver KycRejectedScreen.tsx).
+export async function mockReenviarDocumentos(cadastroId: number) {
+  const empresa = findEmpresaById(cadastroId);
+  if (!empresa) {
+    throw mockError(404, 'CADASTRO_NAO_ENCONTRADO', 'Cadastro não encontrado.');
+  }
+  reenviarDocumentosCadastro(cadastroId);
+  return {status: 200, data: {cadastro_id: cadastroId, status: 'pending'}};
 }

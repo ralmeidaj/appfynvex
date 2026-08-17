@@ -44,6 +44,7 @@ export function SenhaScreen() {
         cnpj: empresa.cnpj,
         cpf,
         kycStatus: empresa.kyc_status,
+        motivoRejeicao: empresa.motivo_rejeicao ?? null,
         representanteId: representante.id,
         representanteNome: representante.nome,
         perfilAcesso: representante.perfil_acesso as EmpresaAuthState['perfilAcesso'],

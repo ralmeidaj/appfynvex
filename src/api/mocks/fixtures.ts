@@ -28,6 +28,9 @@ export interface EmpresaFixture {
   // aceite, se a versão mudar, seria um registro novo, não visto ainda).
   termosVersao?: string;
   termosAceitosEm?: string;
+  // RF-KYC-04: motivo mostrado ao usuário quando kycStatus === 'rejected' —
+  // limpo no reenvio de documentos (volta pra 'pending').
+  motivoRejeicao?: string;
 }
 
 // Um CNPJ fixo por kyc_status, para exercitar os 4 caminhos do login sem
@@ -66,6 +69,7 @@ export const EMPRESAS_SEED: EmpresaFixture[] = [
     cnpj: '44444444444444',
     nomeFantasia: 'Horizonte Saúde',
     kycStatus: 'rejected',
+    motivoRejeicao: 'Contrato Social ilegível — não foi possível confirmar o CNPJ e o responsável legal.',
     vinculoParceiro: {parceiro: null, status: 'nao_vinculado'},
   },
 ];
@@ -124,6 +128,16 @@ export function updateEmpresaNomeFantasia(empresaId: number, nomeFantasia: strin
   const empresa = findEmpresaById(empresaId);
   if (empresa) {
     empresa.nomeFantasia = nomeFantasia;
+  }
+}
+
+// RF-KYC-04: reenvio de documentos corrigidos — volta pra análise (RF-KYC-01)
+// sem reiniciar o cadastro do zero, e sem exigir logout/login de novo.
+export function reenviarDocumentosCadastro(empresaId: number): void {
+  const empresa = findEmpresaById(empresaId);
+  if (empresa) {
+    empresa.kycStatus = 'pending';
+    empresa.motivoRejeicao = undefined;
   }
 }
 
@@ -258,6 +272,22 @@ export const REPRESENTANTES_SEED: RepresentanteFixture[] = [
     convidadoPorRepresentanteId: 1,
     convidadoEm: addDaysISO(todayISO(), -30),
     senha: 'senha456',
+  },
+  {
+    id: 3,
+    empresaId: 4,
+    nome: 'Marcos Vidal',
+    cpf: '444.444.444-00',
+    cargo: 'Sócio-administrador',
+    email: 'marcos.vidal@exemplo.com.br',
+    perfilAcesso: 'representante_legal',
+    // RF-KYC-04: o representante fica `ativo` (pode logar) mesmo com o
+    // cadastro da empresa `rejected` — quem decide pra onde ele vai depois
+    // do login é o RootNavigator, a partir de kycStatus, não este status.
+    status: 'ativo',
+    convidadoPorRepresentanteId: null,
+    convidadoEm: null,
+    senha: 'senha444',
   },
 ];
 

@@ -67,6 +67,9 @@ export interface EmpresaAuthState {
   // Identidade de quem está logado — chave da senha lembrada (RF-AUTH-04a) e do próprio login.
   cpf: string;
   kycStatus: KycStatus;
+  // RF-KYC-04: motivo mostrado quando kycStatus === 'rejected'; null nos
+  // demais casos.
+  motivoRejeicao: string | null;
   representanteId: number;
   representanteNome: string;
   perfilAcesso: PerfilAcesso;

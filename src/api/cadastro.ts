@@ -95,3 +95,8 @@ export const aceitarTermos = (cadastroId: number, versaoTermos: string) =>
     termos_aceitos: true,
     versao_termos: versaoTermos,
   });
+
+// RF-KYC-04: reenvio de documentos corrigidos depois de uma rejeição — sem
+// reiniciar o cadastro do zero.
+export const reenviarDocumentos = (cadastroId: number) =>
+  apiClient.post<{cadastro_id: number; status: string}>(`/cadastro/${cadastroId}/reenviar-documentos`);

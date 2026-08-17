@@ -8,6 +8,7 @@ import {WelcomeScreen} from '../screens/auth/WelcomeScreen';
 import {LoginCpfScreen} from '../screens/auth/LoginCpfScreen';
 import {SenhaScreen} from '../screens/auth/SenhaScreen';
 import {KycPendingScreen} from '../screens/auth/KycPendingScreen';
+import {KycRejectedScreen} from '../screens/auth/KycRejectedScreen';
 import {RecuperarContaScreen} from '../screens/auth/RecuperarContaScreen';
 import {RecuperarCodigoScreen} from '../screens/auth/RecuperarCodigoScreen';
 import {RecuperarFacialScreen} from '../screens/auth/RecuperarFacialScreen';
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   LoginCpf: undefined;
   Senha: {cpf: string};
   KycPending: undefined;
+  KycRejected: undefined;
   EmpresaApp: undefined;
   CadastroCnpjDocs: undefined;
   CadastroAiExtract: undefined;
@@ -88,6 +90,8 @@ export function RootNavigator() {
             <Stack.Screen name="CadastroTerms" component={CadastroTermsScreen} />
             <Stack.Screen name="Simulador" component={SimuladorScreen} />
           </>
+        ) : auth.kycStatus === 'rejected' ? (
+          <Stack.Screen name="KycRejected" component={KycRejectedScreen} />
         ) : auth.kycStatus !== 'approved' ? (
           <Stack.Screen name="KycPending" component={KycPendingScreen} />
         ) : (

@@ -15,6 +15,8 @@ export interface EmpresaResumo {
   nome_fantasia: string;
   cnpj: string;
   kyc_status: KycStatus;
+  // RF-KYC-04: motivo quando kyc_status === 'rejected'; null nos demais casos.
+  motivo_rejeicao: string | null;
 }
 
 export interface RepresentanteResumo {

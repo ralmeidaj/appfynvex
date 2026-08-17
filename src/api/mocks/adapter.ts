@@ -16,6 +16,7 @@ import {
   mockConfirmarLeituraFacialCadastro,
   mockDadosBancarios,
   mockAceiteTermos,
+  mockReenviarDocumentos,
 } from './cadastro.mock';
 import {
   mockGetContratoMae,
@@ -111,6 +112,7 @@ const ROUTES: Record<string, MockHandler> = {
   },
   'POST /cadastro/:id/aceite-termos': (config, params) =>
     mockAceiteTermos(Number(params.id), parseBody(config).versao_termos),
+  'POST /cadastro/:id/reenviar-documentos': (_config, params) => mockReenviarDocumentos(Number(params.id)),
 
   'GET /contrato-mae': config => mockGetContratoMae(config),
   'POST /contrato-mae/assinar/iniciar': config => mockIniciarAssinaturaContratoMae(config),

@@ -78,6 +78,9 @@ export function CadastroTermsScreen() {
         cnpj,
         cpf,
         kycStatus: res.data.kyc_status,
+        // Cadastro recém-concluído nunca nasce rejeitado — só passa a existir
+        // depois de uma análise da equipe Fynvex (RF-KYC-02/04).
+        motivoRejeicao: null,
         representanteId,
         representanteNome,
         // RF-REP-01: quem conclui o cadastro original é sempre o primeiro

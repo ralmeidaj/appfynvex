@@ -63,6 +63,7 @@ export async function mockLogin(cpf: string, senha: string) {
         nome_fantasia: empresa.nomeFantasia,
         cnpj: empresa.cnpj,
         kyc_status: empresa.kycStatus,
+        motivo_rejeicao: empresa.motivoRejeicao ?? null,
       },
       representante: {
         id: representante.id,
@@ -144,6 +145,7 @@ export async function mockConfirmarRecuperacaoFacial(sessionId: string) {
         nome_fantasia: empresa.nomeFantasia,
         cnpj: empresa.cnpj,
         kyc_status: empresa.kycStatus,
+        motivo_rejeicao: empresa.motivoRejeicao ?? null,
       },
       representante: {
         id: representante.id,
